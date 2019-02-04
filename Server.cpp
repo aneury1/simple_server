@@ -262,16 +262,15 @@ void handleHTTPResponseWithMiddleWare(int client, const char *query, int len, st
 
 
 
-
-
-
-
-
+Server::Server(ServerHandler *handler)
+{
+   server_handler=nullptr;
+}
 
 
 Server::Server(int16_t port,bool ssl_bindingconst ,const char *instance_name, handle_response_ptr handler   )
 {
-
+  server_handler=nullptr;
   this->instance_name = (!instance_name)?"NO-NAME-INSTANCE":instance_name;
   this->ssl_enable    = ssl_bindingconst;
   this->port          = port;
@@ -295,7 +294,7 @@ bool Server::support_ssl()
     return this->ssl_enable;
 }
 
-void Server::launch()
+void Server::default_launcher()
 {
    if(ssl_enable)
    {
@@ -360,6 +359,86 @@ void Server::launch()
         shutdown(client,2);
     }
    }
+}
+
+
+
+void Server::launch()
+{
+    if(nullptr==server_handler)
+    {
+        printf("Default Launcher is called...\n");
+        default_launcher();
+    }
+    else
+    {
+        server_handler->launch();
+    }
+/*
+   if(ssl_enable)
+   {
+       
+    printf("Waiting for client on port %d\n", this->port);
+    while(1) {
+        struct sockaddr_in addr;
+        int len = sizeof(addr);
+        SSL *ssl;
+        const char reply[] = "test\n";
+
+        int client = accept(socket_fd.socket_fd, (struct sockaddr*)&addr, &len);
+        if (client < 0) {
+            perror("Unable to accept");
+            exit(EXIT_FAILURE);
+        }
+
+        ssl = SSL_new(ctx);
+        SSL_set_fd(ssl, client);
+
+        if (SSL_accept(ssl) <= 0) {
+            ERR_print_errors_fp(stderr);
+        }
+        else {
+            printf("client accepted... %s\n ", this->instance_name);
+            char buffer[8*1024]={0};
+            int rc =SSL_read(ssl,buffer,8*1024 );
+            SSL_write(ssl, buffer, rc);
+        }
+
+        SSL_free(ssl);
+        shutdown(client,2);
+    }
+
+   }
+   else
+   {
+ 
+    printf("Waiting for client on port %d\n", this->port);
+    while(1) 
+    {
+        struct sockaddr_in addr;
+        int len = sizeof(addr);
+        const char reply[] = "test\n";
+        int client = accept(socket_fd.socket_fd, (struct sockaddr*)&addr, &len);
+        if (client < 0) 
+        {
+            printf("client rejected for some reason");
+        }
+        else
+        {
+            printf("client accepted... %s\n ", this->instance_name);
+        }
+            char buffer[8*1024]={0};
+            int rc = recv(client, buffer, (8*1024), 0);
+            if(this->connection_handler.size()<=0)
+              handleHTTPResponse(client, buffer, rc);
+            else
+              handleHTTPResponseWithMiddleWare(client, buffer, rc,connection_handler);
+         if(client>0)
+           printf("close connection.....\n");
+        shutdown(client,2);
+    }
+   }
+   */
 }
 
 void Server::get(string path, http_request_handler handler)

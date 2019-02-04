@@ -23,6 +23,8 @@ typedef SOCKET int;
 #include <arpa/inet.h>
 #endif
 
+
+#include "ServerHandler.h"
 #include "HttpRequest.h"
 
 #ifdef ___GUID_GENERATOR__
@@ -74,14 +76,22 @@ class Server
 
   handle_response_ptr response_handler;
 
+  void default_launcher();
+
+
   protected:
 
+  ServerHandler* server_handler;
+ 
   ////typedef vector<http_request_handler> middleware_base;
   
   std::map<Identifier , http_request_handler> connection_handler;
 
   public:
 
+
+ 
+   Server(ServerHandler *handler);
    Server(int16_t port,bool ssl_binding = false,const char *instance_name=nullptr, handle_response_ptr handler =nullptr);
    
    const char *instance_name;
