@@ -1,9 +1,5 @@
 # AHTTPServer
 
-this application will be at the backend and will save information from client that want to fectch and push information
-to the database of the Photogram API.
-
-
 the requirement for this server are the following list.
 
 - bind specific port http & https
