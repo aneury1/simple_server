@@ -4,7 +4,9 @@
 using std::string;
 using std::vector;
 // #include <sqlite3ext.h>
-#include <sqlite3.h>
+///#include <sqlite3.h>
+
+struct sqlite3{};
 
 enum MODEL_TYPE{INTEGER_TYPE, FLOAT_TYPE, BOOLEAN_TYPE, STRING_TYPE, CHAR_TYPE, BLOB_TYPE, INVALID_TYPE};
 

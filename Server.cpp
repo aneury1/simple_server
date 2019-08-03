@@ -7,8 +7,9 @@
 using namespace std;
 #include <openssl/ssl.h>
 #include <openssl/err.h>
+#ifdef __WIN32__
 #include <openssl/applink.c>
-
+#endif
 
 #include <vector>
 #include "JSON.h"
@@ -302,7 +303,7 @@ void Server::default_launcher()
     printf("Waiting for client on port %d\n", this->port);
     while(1) {
         struct sockaddr_in addr;
-        int len = sizeof(addr);
+        socklen_t len = sizeof(addr);
         SSL *ssl;
         const char reply[] = "test\n";
 
@@ -337,7 +338,7 @@ void Server::default_launcher()
     while(1) 
     {
         struct sockaddr_in addr;
-        int len = sizeof(addr);
+        socklen_t len = sizeof(addr);
         const char reply[] = "test\n";
         int client = accept(socket_fd.socket_fd, (struct sockaddr*)&addr, &len);
         if (client < 0) 

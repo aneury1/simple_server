@@ -3,8 +3,7 @@
 #include <winsock2.h>
 #include <windows.h>
 #else
-typedef SOCKET int;
-
+typedef int SOCKET;
 #endif
 #include <time.h>
 #include <stdlib.h>
