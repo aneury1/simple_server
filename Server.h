@@ -2,6 +2,9 @@
 #ifdef __WIN32__
 #include <winsock2.h>
 #include <windows.h>
+struct WinsockInitializer{
+
+};
 #else
 typedef int SOCKET;
 #endif
@@ -15,8 +18,12 @@ typedef int SOCKET;
 #include <stdio.h>
 #include <unistd.h>
 
+///#define OPENSSL_INCLUDE
+#ifdef OPENSSL_INCLUDE
 #include <openssl/ssl.h>
 #include <openssl/err.h>
+#endif
+
 #ifdef __linux__
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -69,14 +76,14 @@ class Server
   
    bool ssl_enable;
 
+#ifdef OPENSSL_INCLUDE
    SSL_CTX *ctx;
-
+#endif
   int16_t port;
 
   handle_response_ptr response_handler;
 
   void default_launcher();
-
 
   protected:
 

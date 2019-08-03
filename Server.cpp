@@ -5,12 +5,14 @@
 #include <unordered_map>
 #include <string>
 using namespace std;
+
+#ifdef OPENSSL_INCLUDE
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #ifdef __WIN32__
 #include <openssl/applink.c>
 #endif
-
+#endif
 #include <vector>
 #include "JSON.h"
 
@@ -33,9 +35,6 @@ struct WinsockInit{
 #else
 static bool ok = true;
 #endif
-
-
-
 
 
 #ifdef __EXAMPLE__
@@ -77,10 +76,6 @@ Content-Location: /new.html
 HTTP/1.1 204 No Content
 Content-Location: /existing.html
 #endif
-
-
-
-
 
 
 
@@ -134,17 +129,28 @@ Socket createSSLSocket(int16_t port)
 
 void init_openssl()
 { 
+#ifdef OPENSSL_INCLUDE
     SSL_load_error_strings();	
     OpenSSL_add_ssl_algorithms();
+#endif
 }
 
 void cleanup_openssl()
-{
+{  
+#ifdef OPENSSL_INCLUDE
     EVP_cleanup();
+#endif
 }
+
+
+#ifndef OPENSSL_INCLUDE
+struct SSL_CTX{};
+#endif
+
 
 SSL_CTX *create_context()
 {
+#ifdef OPENSSL_INCLUDE
     const SSL_METHOD *method;
     SSL_CTX *ctx;
 
@@ -158,10 +164,15 @@ SSL_CTX *create_context()
     }
 
     return ctx;
+#else
+    return NULL;
+#endif 
 }
 
 void configure_context(SSL_CTX *ctx)
 {
+
+#ifdef OPENSSL_INCLUDE
     SSL_CTX_set_ecdh_auto(ctx, 1);
 
     /* Set the key and cert */
@@ -174,6 +185,7 @@ void configure_context(SSL_CTX *ctx)
         ERR_print_errors_fp(stderr);
 	exit(EXIT_FAILURE);
     }
+#endif
 }
 
 
@@ -275,14 +287,18 @@ Server::Server(int16_t port,bool ssl_bindingconst ,const char *instance_name, ha
   this->instance_name = (!instance_name)?"NO-NAME-INSTANCE":instance_name;
   this->ssl_enable    = ssl_bindingconst;
   this->port          = port;
+
+#ifdef OPENSSL_INCLUDE
   if(this->ssl_enable)
   {
+
     init_openssl();
     ctx = create_context();
     configure_context(ctx);
     this->socket_fd.socket_fd = create_socket(port);
   }
   else
+#endif
   {
       this->socket_fd.socket_fd = create_socket(port);
       ///printf("Socket fd value is =%d\n", this->socket_fd.socket_fd);
@@ -292,11 +308,17 @@ Server::Server(int16_t port,bool ssl_bindingconst ,const char *instance_name, ha
       
 bool Server::support_ssl()
 {
+ #ifdef OPENSSL_INCLUDE
     return this->ssl_enable;
+    #else
+    return false;    
+#endif
 }
 
 void Server::default_launcher()
 {
+
+ #ifdef OPENSSL_INCLUDE   
    if(ssl_enable)
    {
        /* Handle SSL connections */
@@ -332,6 +354,7 @@ void Server::default_launcher()
 
    }
    else
+#endif
    {
 /* Handle NONSSL connections */
     printf("Waiting for client on port %d\n", this->port);
