@@ -11,6 +11,7 @@ using namespace std;
 #include <openssl/err.h>
 #ifdef __WIN32__
 #include <openssl/applink.c>
+typedef int socklen_t;
 #endif
 #endif
 #include <vector>
@@ -355,6 +356,11 @@ void Server::default_launcher()
    }
    else
 #endif
+#ifdef __WIN32__
+typedef int socklen_t;
+#endif
+
+
    {
 /* Handle NONSSL connections */
     printf("Waiting for client on port %d\n", this->port);
@@ -362,6 +368,7 @@ void Server::default_launcher()
     {
         struct sockaddr_in addr;
         socklen_t len = sizeof(addr);
+        
         const char reply[] = "test\n";
         int client = accept(socket_fd.socket_fd, (struct sockaddr*)&addr, &len);
         if (client < 0) 
