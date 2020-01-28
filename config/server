@@ -1,0 +1,23 @@
+[
+{
+    "port":3456,
+    "ssl" :false,
+    "proxy" :"www.test.test",
+    "smtp":false
+    "recv_timeout":90,
+    "send_timeout":90,
+    "cron":"cron.txt",
+    "server_root":"./www/"
+},
+{
+    "port":9898,
+    "ssl" :false,
+    "proxy" :"www.test1.test",
+    "smtp":false
+    "recv_timeout":90,
+    "send_timeout":90,
+    "cron":"cron.txt",
+    "server_root":"./www/"
+}
+
+]
