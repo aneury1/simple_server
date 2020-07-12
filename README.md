@@ -1,20 +1,23 @@
 # AHTTPServer
 
-the requirement for this server are the following list.
+## about
+this project is a HTTP Server application that let people create endpoints, firstly designed to 
+help me understand how socket, http, parsers and other stuff works;
 
-- bind specific port http & https
-- create both thread in order to handle ssl and single http connection
-- every connection will be launch as child thread
-- in case of the server should stop there must a join or broadcast msg to all connected client.
+## refactoring
+by now I only have been playing around with std::thread, socket (without any library ), I know this approach is like reivent the wheel because I could use some library (like boost::asio,...) but in first instance I started from the bottom because I want to understand and give the opportunity to read how some thing works under the hood, obviously I would love to bring to people to use therefore 
+I decided to create a framework where developer could use to create application without worry something would goes wrong and in addition they could add capabilty to their applications using this framework. in the next month I would add few component to this framework in order to achieve the thing i already mentioned.
 
-#### action
-- server already start on http connection
-- server already accept middleware connection
-- server serve JSON is request and is settle by the server.
+## Build project
+in order to build the project I set premake file that would generate the build script for the supported platform,later I would update this in order to give more information about the compiler flags for your desire platform.
 
 
-#### todo
-- this server need to be more clear on thread( thread need to be improve)
-- need to be create a test suite
-- need to be create static file service
-- need to be refix the documentation and eliminate some code that does not belong to this space.
+## TODO 
+There are a lot  of thing to do in this project here are the most need 
+- Build Script Configuration
+- Proxies 
+- Virtual Proxies
+- General Hash Functions
+- Common Datastructure that could Support MT, NIO
+- HTMLBuilder
+- JSON,XML, yaml parser, other common parser.... 
