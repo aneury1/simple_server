@@ -9,19 +9,17 @@ int count_foward_slashed(string s)
     return ret;
 }
 
-////#include <iostream>
+ 
 HTTPPath::HTTPPath(string path)
 {
-    ////std::cout <<"path \n"<<path<<"path\n\n\n";
-    if(path.length()<=0){
-      /////  std::cout <<"path length is 0\n";
+    if(path.length()<=0)
+    {
         return;
     }
      this->path=path;
      if(path.length()==1)
      {
         foward_slashed_number = 0;
-        /////std::cout <<"foward slashed count just 1";
         return  ;
      }
      foward_slashed_number = count_foward_slashed(path);
@@ -41,8 +39,6 @@ HTTPPath::HTTPPath(string path)
             tmp+=path[iter];
          }
           iter++;
-
-
           if(iter==path.length())
           {
               if(tmp.length()>0)
@@ -50,5 +46,4 @@ HTTPPath::HTTPPath(string path)
               break;
           }
      }  
-  
 }

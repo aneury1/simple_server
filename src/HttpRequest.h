@@ -2,12 +2,9 @@
 #include <string>
 using std::string;
 #include <vector>
-#include <iostream>
 #include "HTTPPath.h"
 
 enum class HTTP_VERB{HTTP_GET = 1, HTTP_POST, HTTP_PUT, HTTP_OPTIONS,HTTP_INVALID_VERB};
-
-
 
 struct HttpHeader{
     string key;
@@ -25,5 +22,4 @@ struct HTTPRequest
    HTTPPath *http_path;
    string body;
    HTTPRequest(const char *str);
-   
 };

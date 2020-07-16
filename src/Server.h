@@ -1,4 +1,5 @@
 #pragma once
+#define __WIN32__
 #ifdef __WIN32__
 #include <winsock2.h>
 #include <windows.h>
@@ -16,8 +17,10 @@ typedef int SOCKET;
 #include <thread>
 #include <mutex>
 #include <stdio.h>
-#include <unistd.h>
 
+#ifdef __linux__
+#include <unistd.h>
+#endif
 ///#define OPENSSL_INCLUDE
 #ifdef OPENSSL_INCLUDE
 #include <openssl/ssl.h>

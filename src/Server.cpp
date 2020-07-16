@@ -1,7 +1,7 @@
 #include "Server.h"
 #include "HttpRequest.h"
 #include <stdio.h>
-#include <unistd.h>
+ 
 #include <unordered_map>
 #include <string>
 using namespace std;
@@ -20,9 +20,11 @@ typedef int socklen_t;
 #ifdef __linux__
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <unistd.h>
 #endif
 #ifdef __WIN32__
   
+#pragma 
 static bool ok= false;
 struct WinsockInit{
     WinsockInit(){
@@ -229,7 +231,7 @@ string getAllUser()
 
 void handleHTTPResponse(int client, const char *query, int len )
 {
-    cout <<"Without Connection handler\n"<< query <<"\n\n\n";
+    ///cout <<"Without Connection handler\n"<< query <<"\n\n\n";
     HTTPRequest query_request(query);
     string response_buffer;
     response_buffer += "HTTP/1.1 200 OK\r\n";
@@ -264,7 +266,6 @@ void handleHTTPResponseWithMiddleWare(int client, const char *query, int len, st
       }
       else
       {
-          std::cout <<"this handler is null redireting to default handler";
           handleHTTPResponse( client,  query,  len );
       }
 

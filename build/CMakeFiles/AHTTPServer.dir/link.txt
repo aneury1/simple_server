@@ -1,1 +1,0 @@
-/usr/bin/c++      CMakeFiles/AHTTPServer.dir/src/HTTPPath.cpp.o CMakeFiles/AHTTPServer.dir/src/HttpRequest.cpp.o CMakeFiles/AHTTPServer.dir/src/JSON.cpp.o CMakeFiles/AHTTPServer.dir/src/Server.cpp.o CMakeFiles/AHTTPServer.dir/src/main.cpp.o  -o AHTTPServer -rdynamic -lpthread 
