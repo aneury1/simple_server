@@ -1,5 +1,5 @@
 #pragma once
-#define __WIN32__
+ 
 #ifdef __WIN32__
 #include <winsock2.h>
 #include <windows.h>

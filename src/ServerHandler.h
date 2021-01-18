@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SERVERHANDLER_H_DEFINED
+#define SERVERHANDLER_H_DEFINED
 
 
 struct ServerHandler
@@ -14,3 +15,4 @@ struct ServerHandler
 };
 
 
+#endif

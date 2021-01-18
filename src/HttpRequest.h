@@ -6,7 +6,8 @@ using std::string;
 
 enum class HTTP_VERB{HTTP_GET = 1, HTTP_POST, HTTP_PUT, HTTP_OPTIONS,HTTP_INVALID_VERB};
 
-struct HttpHeader{
+struct HttpHeader
+{
     string key;
     string value;
     HttpHeader(string bulk);
