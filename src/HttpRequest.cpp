@@ -1,7 +1,6 @@
 #include "HttpRequest.h"
 #include <ctype.h>
 
-
 bool compare_ignore_case(string s1, string s2)
 {
     if(s1.size()!=s2.size())return false;
@@ -14,7 +13,6 @@ bool compare_ignore_case(string s1, string s2)
     return true;
 }
 
-
 HttpHeader::HttpHeader(string bulk)
 {
    int find_1 = bulk.find(":",0);
@@ -26,6 +24,8 @@ HttpHeader::HttpHeader(string bulk)
        this->value = bulk.substr(find_1, find_2 - find_1); 
    }
 }
+
+
 HttpHeader::HttpHeader(string key, string value)
 {  
     this->key = key;
@@ -35,8 +35,6 @@ string HttpHeader::toString()
 {
   return (key+":"+value+"\r\n");
 }
-
-
 
 HTTPRequest::HTTPRequest(const char *str)
 {

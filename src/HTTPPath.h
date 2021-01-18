@@ -4,6 +4,9 @@
 #include <string>
 using std::string;
 using std::vector;
+
+
+////\this structure parse the path send by requester or the response object.
 struct HTTPPath
 {
    string path;

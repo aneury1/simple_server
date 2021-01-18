@@ -59,7 +59,8 @@ struct Socket
     sockaddr_in address;
 };
 
-struct Identifier : public std::pair<std::string, HTTP_VERB>{
+struct Identifier : public std::pair<std::string, HTTP_VERB>
+{
       std::string path;
       HTTP_VERB   verb;
       Identifier()=delete;
@@ -68,7 +69,7 @@ struct Identifier : public std::pair<std::string, HTTP_VERB>{
 
 typedef void (*handle_response_ptr)(int , char *, int );
 
-typedef void (*http_request_handler)(int client_socket, HTTPRequest *response);
+typedef void (*http_request_handler)(int client_socket, HTTPRequest *request);
 
 
 class Server

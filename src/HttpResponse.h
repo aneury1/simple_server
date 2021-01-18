@@ -1,6 +1,6 @@
 #pragma once
 
-
+///\common response code status.
 enum HTTP_RESPONSE_STATUS
  {
      OK_200, 
@@ -16,12 +16,11 @@ enum HTTP_RESPONSE_STATUS
      INTERNAL_SERVER_ERROR_500,
      NOT_IMPLEMENTED_501,
      BAD_GATEWAY_502
-
 };
 
+
+///\todo: implement HTTP Response structure.
 struct HttpResponse
 {
-
-
 
 };

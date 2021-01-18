@@ -21,3 +21,8 @@ There are a lot  of thing to do in this project here are the most need
 - Common Datastructure that could Support MT, NIO
 - HTMLBuilder
 - JSON,XML, yaml parser, other common parser.... 
+- websocket
+- SocketIO
+- Connect to Other non http Server(Raw Server, UDP Server)
+- change thread model to NIO/Select/Poll when configure.
+- ...
