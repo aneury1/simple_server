@@ -406,7 +406,8 @@ void Server::launch()
     {
         server_handler->launch();
     }
-/*
+#ifdef SSL_SERVER_ENABLED
+#warning "compile with SSL Support"
    if(ssl_enable)
    {
        
@@ -470,7 +471,7 @@ void Server::launch()
         shutdown(client,2);
     }
    }
-   */
+#endif
 }
 
 void Server::get(string path, http_request_handler handler)

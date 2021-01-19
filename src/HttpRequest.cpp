@@ -104,15 +104,16 @@ HTTPRequest::HTTPRequest(const char *str)
             else
             {
                 break;
-            }
-            
+            }            
          }
     }
 
     find_1 = string_v.find("\r\n\r\n", 0);
+    
     if(find_1!=string::npos)
     {
         find_1+=4;
+    
         if(find_1<string_v.length())
         {
             this->body = string_v.substr(find_1, string_v.length()- find_1);
