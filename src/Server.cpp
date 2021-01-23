@@ -393,8 +393,6 @@ typedef int socklen_t;
    }
 }
 
-
-
 void Server::launch()
 {
     if(nullptr==server_handler)
@@ -410,7 +408,6 @@ void Server::launch()
 #warning "compile with SSL Support"
    if(ssl_enable)
    {
-       
     printf("Waiting for client on port %d\n", this->port);
     while(1) {
         struct sockaddr_in addr;

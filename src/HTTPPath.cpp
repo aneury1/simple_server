@@ -10,7 +10,7 @@ int count_foward_slashed(string s)
 }
 
  
-HTTPPath::HTTPPath(string path)
+HTTPPath::HTTPPath(String path)
 {
     if(path.length()<=0)
     {
@@ -23,9 +23,9 @@ HTTPPath::HTTPPath(string path)
         return  ;
      }
      foward_slashed_number = count_foward_slashed(path);
-     string tmp="";
+     String tmp="";
      int iter=path.find("/", 0);
-     if(iter==string::npos)return;
+     if(iter==String::npos)return;
      iter++;
      while(1)
      {
