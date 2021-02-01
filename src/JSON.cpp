@@ -111,9 +111,6 @@ JsonPair::JsonPair( std::string key, JSONObject object)
   this->type  = JSON_OBJECT;
 }
 
-
-
- 
 JSONObject::JSONObject()
 {
 }
@@ -122,7 +119,6 @@ void JSONObject::addElement(JsonPair* pair)
 {
     this->key_value_list.emplace_back(pair);
 }
-
 
 JSONObject JSONObject::addElement(std::string key, const char *value)
 {
@@ -156,14 +152,6 @@ JSONObject JSONObject::addElement(std::string key)
     return (*this);
 }
 
-
-
-
-
-
-
-
-
 std::string JSONObject::stringify()
 {
     std::string ret;
@@ -182,8 +170,7 @@ std::string JSONObject::stringify()
              if(iter== key_value_list.size())
                break;
              else
-               ret+=",";
-             
+               ret+=",";            
         }
     }
     ret+="\r\n}";

@@ -1,6 +1,9 @@
 #pragma once
 #include <string>
 #include <vector>
+
+
+///\ current Type that should be supported by these functions
 enum JSON_DATATYPE{JSON_NUMBER=1, JSON_STRING, JSON_OBJECT, JSON_ARRAY, JSON_BOOLEAN, JSON_NULL};
 
 class JSONObject;

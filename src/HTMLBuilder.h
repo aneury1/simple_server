@@ -1,16 +1,20 @@
 #ifndef HTMLBUILDER
 #define HTMLBUILDER
+
 #include <string>
 #include <sstream>
 #include <vector>
 
+//\ this is our custom String handler for operation
 typedef std::string String;
+
 typedef std::stringstream Stringtream;
 
 
 struct HTMLParameter
 {
    const String name;
+
    const String value;
 
    HTMLParameter(String name);

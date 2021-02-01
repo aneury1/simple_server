@@ -1,5 +1,5 @@
 #pragma once
- 
+#define __WIN32__
 #ifdef __WIN32__
 #include <winsock2.h>
 #include <windows.h>
@@ -102,6 +102,7 @@ class Server
 
  
    Server(ServerHandler *handler);
+
    Server(int16_t port,bool ssl_binding = false,const char *instance_name=nullptr, handle_response_ptr handler =nullptr);
    
    const char *instance_name;
@@ -111,9 +112,14 @@ class Server
    void launch();
 
    void get(string path, http_request_handler);
+   
    void post(string path   , http_request_handler);
+   
    void put(string path   , http_request_handler);
 
    static int SendResponse(int client, char *buffer, int len);
+   
    static int SendResponse(int client, const std::string &buffer);
+
+
 };

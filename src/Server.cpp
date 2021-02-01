@@ -1,9 +1,9 @@
-#include "Server.h"
-#include "HttpRequest.h"
+
+#include <vector>
 #include <stdio.h>
- 
 #include <unordered_map>
 #include <string>
+
 using namespace std;
 
 #ifdef OPENSSL_INCLUDE
@@ -14,16 +14,22 @@ using namespace std;
 typedef int socklen_t;
 #endif
 #endif
-#include <vector>
-#include "JSON.h"
 
 #ifdef __linux__
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
 #endif
-#ifdef __WIN32__
-  
+
+
+#include "Server.h"
+#include "HttpRequest.h"
+#include "JSON.h"
+#include "AHTTPConsoleLogger.h"
+
+
+#ifdef _WIN32__
+#include
 #pragma 
 static bool ok= false;
 struct WinsockInit{
@@ -75,17 +81,9 @@ Content-length: 16
 
 HTTP/1.1 201 Created
 Content-Location: /new.html
-
 HTTP/1.1 204 No Content
 Content-Location: /existing.html
 #endif
-
-
-
-
-
-
-
 
 
 
@@ -100,25 +98,27 @@ int create_socket(int16_t port)
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
     s = socket(AF_INET, SOCK_STREAM, 0);
-    if (s < 0) {
-	perror("Unable to create socket");
-	exit(EXIT_FAILURE);
+    if (s < 0) 
+    {
+	    LogTerminal("Unable to create socket");
+	    exit(EXIT_FAILURE);
     }
 
-    if (bind(s, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
-	printf("Unable to bind\n");
-	exit(EXIT_FAILURE);
+    if (bind(s, (struct sockaddr*)&addr, sizeof(addr)) < 0)
+    {
+	    LogTerminal("Unable to bind\n");
+	    exit(EXIT_FAILURE);
     }
     
     int reuse_address = 1;
     int len = sizeof(reuse_address);
+
     setsockopt(s, SOL_SOCKET, SO_REUSEADDR,(char *)&reuse_address, len);
 
-
-
-    if (listen(s, 16) < 0) {
-	perror("Unable to listen\n");
-	exit(EXIT_FAILURE);
+    if (listen(s, 16) < 0)
+    {
+	    LogTerminal("Unable to listen\n");
+	    exit(EXIT_FAILURE);
     }
     return s;
 }
@@ -208,7 +208,6 @@ string remove_leading_space(string b){
     return ret;
 }
 
-
 string getAllUser()
 {
     JSONObject object;
@@ -231,35 +230,27 @@ string getAllUser()
 
 void handleHTTPResponse(int client, const char *query, int len )
 {
-    ///cout <<"Without Connection handler\n"<< query <<"\n\n\n";
     HTTPRequest query_request(query);
     string response_buffer;
     response_buffer += "HTTP/1.1 200 OK\r\n";
     response_buffer += "Content-Type: application/json\r\n";
     string body_response;
-   body_response = getAllUser();
-   response_buffer += "Content-Length:"+  std::to_string(body_response.length());
-   response_buffer +="\r\n\r\n";
-   response_buffer += body_response.c_str();
-   int rc =  send(client, response_buffer.c_str(), response_buffer.size(), 0);
+    body_response = getAllUser();
+    response_buffer += "Content-Length:"+  std::to_string(body_response.length());
+    response_buffer +="\r\n\r\n";
+    response_buffer += body_response.c_str();
+    int rc =  send(client, response_buffer.c_str(), response_buffer.size(), 0);
 }
 
 void handleHTTPResponseWithMiddleWare(int client, const char *query, int len, std::map<Identifier , http_request_handler> middleware )
 {
-//    cout <<"With Connection handler\n"<< query <<"\n\n\n";
-//    
-//    string response_buffer;
-//    response_buffer += "HTTP/1.1 200 OK\r\n";
-//    response_buffer += "Content-Type: application/json\r\n";
-//    string body_response;
-//    body_response = getAllUser();
-//    response_buffer += "Content-Length:"+  std::to_string(body_response.length());
-//    response_buffer +="\r\n\r\n";
-//    response_buffer += body_response.c_str();
-//    int rc =  send(client, response_buffer.c_str(), response_buffer.size(), 0);
+     
       HTTPRequest query_request(query);
+     
       Identifier identifier(query_request.path,query_request.verb);
+     
       http_request_handler handler = middleware[identifier];
+      
       if(handler)
       {
           handler(client, &query_request);
@@ -268,20 +259,12 @@ void handleHTTPResponseWithMiddleWare(int client, const char *query, int len, st
       {
           handleHTTPResponse( client,  query,  len );
       }
-
-
-
 }
-
-
-
-
 
 Server::Server(ServerHandler *handler)
 {
    server_handler=nullptr;
 }
-
 
 Server::Server(int16_t port,bool ssl_bindingconst ,const char *instance_name, handle_response_ptr handler   )
 {
@@ -324,16 +307,22 @@ void Server::default_launcher()
    if(ssl_enable)
    {
        /* Handle SSL connections */
-    printf("Waiting for client on port %d\n", this->port);
-    while(1) {
+    LogTerminal("Waiting for client on port %d\n", this->port);
+    while(1) 
+    {
         struct sockaddr_in addr;
+    
         socklen_t len = sizeof(addr);
+    
         SSL *ssl;
+    
         const char reply[] = "test\n";
 
         int client = accept(socket_fd.socket_fd, (struct sockaddr*)&addr, &len);
-        if (client < 0) {
-            perror("Unable to accept");
+        
+        if (client < 0)
+        {
+            LogTerminal("Unable to accept");
             exit(EXIT_FAILURE);
         }
 
@@ -343,8 +332,9 @@ void Server::default_launcher()
         if (SSL_accept(ssl) <= 0) {
             ERR_print_errors_fp(stderr);
         }
-        else {
-            printf("client accepted... %s\n ", this->instance_name);
+        else 
+        {
+            LogTerminal("client accepted... %s\n ", this->instance_name);
             char buffer[8*1024]={0};
             int rc =SSL_read(ssl,buffer,8*1024 );
             SSL_write(ssl, buffer, rc);
@@ -360,11 +350,9 @@ void Server::default_launcher()
 #ifdef __WIN32__
 typedef int socklen_t;
 #endif
-
-
    {
-/* Handle NONSSL connections */
-    printf("Waiting for client on port %d\n", this->port);
+    LogTerminal("Waiting for client on port %d\n", this->port);
+    
     while(1) 
     {
         struct sockaddr_in addr;
@@ -374,20 +362,24 @@ typedef int socklen_t;
         int client = accept(socket_fd.socket_fd, (struct sockaddr*)&addr, &len);
         if (client < 0) 
         {
-            printf("client rejected for some reason");
+            LogTerminal("client rejected for some reason");
         }
         else
         {
-            printf("client accepted... %s\n ", this->instance_name);
+            LogTerminal("client accepted... %s\n ", this->instance_name);
         }
+        
             char buffer[8*1024]={0};
+        
             int rc = recv(client, buffer, (8*1024), 0);
+        
             if(this->connection_handler.size()<=0)
               handleHTTPResponse(client, buffer, rc);
             else
               handleHTTPResponseWithMiddleWare(client, buffer, rc,connection_handler);
+       
          if(client>0)
-           printf("close connection.....\n");
+           LogTerminal("close connection.....\n");
         shutdown(client,2);
     }
    }
@@ -397,7 +389,7 @@ void Server::launch()
 {
     if(nullptr==server_handler)
     {
-        printf("Default Launcher is called...\n");
+        LogTerminal("Default Launcher is called...\n");
         default_launcher();
     }
     else
@@ -408,27 +400,34 @@ void Server::launch()
 #warning "compile with SSL Support"
    if(ssl_enable)
    {
-    printf("Waiting for client on port %d\n", this->port);
-    while(1) {
+    
+    LogTerminal("Waiting for client on port %d\n", this->port);
+    
+    while(1) 
+    {
         struct sockaddr_in addr;
         int len = sizeof(addr);
         SSL *ssl;
         const char reply[] = "test\n";
 
         int client = accept(socket_fd.socket_fd, (struct sockaddr*)&addr, &len);
-        if (client < 0) {
-            perror("Unable to accept");
+        if (client < 0) 
+        {
+            LogTerminal("Unable to accept");
             exit(EXIT_FAILURE);
         }
 
         ssl = SSL_new(ctx);
+        
         SSL_set_fd(ssl, client);
 
-        if (SSL_accept(ssl) <= 0) {
+        if (SSL_accept(ssl) <= 0)
+        {
             ERR_print_errors_fp(stderr);
         }
-        else {
-            printf("client accepted... %s\n ", this->instance_name);
+        else 
+        {
+            LogTerminal("client accepted... %s\n ", this->instance_name);
             char buffer[8*1024]={0};
             int rc =SSL_read(ssl,buffer,8*1024 );
             SSL_write(ssl, buffer, rc);
@@ -442,7 +441,7 @@ void Server::launch()
    else
    {
  
-    printf("Waiting for client on port %d\n", this->port);
+    LogTerminal("Waiting for client on port %d\n", this->port);
     while(1) 
     {
         struct sockaddr_in addr;
@@ -451,11 +450,11 @@ void Server::launch()
         int client = accept(socket_fd.socket_fd, (struct sockaddr*)&addr, &len);
         if (client < 0) 
         {
-            printf("client rejected for some reason");
+            LogTerminal("client rejected for some reason");
         }
         else
         {
-            printf("client accepted... %s\n ", this->instance_name);
+            LogTerminal("client accepted... %s\n ", this->instance_name);
         }
             char buffer[8*1024]={0};
             int rc = recv(client, buffer, (8*1024), 0);
@@ -464,7 +463,7 @@ void Server::launch()
             else
               handleHTTPResponseWithMiddleWare(client, buffer, rc,connection_handler);
          if(client>0)
-           printf("close connection.....\n");
+           LogTerminal("close connection.....\n");
         shutdown(client,2);
     }
    }

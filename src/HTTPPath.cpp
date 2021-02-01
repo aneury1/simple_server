@@ -17,16 +17,23 @@ HTTPPath::HTTPPath(String path)
         return;
     }
      this->path=path;
+
      if(path.length()==1)
      {
         foward_slashed_number = 0;
         return  ;
      }
+     
      foward_slashed_number = count_foward_slashed(path);
+     
      String tmp="";
+     
      int iter=path.find("/", 0);
+     
      if(iter==String::npos)return;
+     
      iter++;
+     
      while(1)
      {
          if(path[iter]=='/')
