@@ -6,6 +6,7 @@
 #include "HttpRequest.h"
 #include "HTTPPath.h"
 #include "Utils.h"
+#include "AHTMLBuilder.h"
 
 void home(int client, HTTPRequest* response){
 
@@ -27,7 +28,18 @@ void home2(int client, HTTPRequest* response) {
     int rc = send(client, response_buffer.c_str(), response_buffer.size(), 0);
 }
 
+void testHtml(int client, HTTPRequest* unused)
+{
+    HTMLBuilder builder;
+    
+    auto p = makeHTMLTag("p", "this is a HTML Builder single Test").toString();
+   
+    builder.AddTag(p);
+   
+    std::string response_buffer = createHttpResponse(200, "OK", WellKnowContentType::Html, builder.toString());
 
+    int rc = send(client, response_buffer.c_str(), response_buffer.size(), 0);
+}
 
 
 int main(int argc, char *argv[])
@@ -36,7 +48,9 @@ int main(int argc, char *argv[])
   
     theServer1.get("/", home);
     theServer1.get("/test", home2);
-  
+    theServer1.get("/html", testHtml);
+
+
     auto tls_server =[&](){
          theServer1.launch();
    };
