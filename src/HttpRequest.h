@@ -8,6 +8,18 @@ using std::string;
 ///\this is the list of HTTP Verb that server support.
 enum class HTTP_VERB{HTTP_GET = 1, HTTP_POST, HTTP_PUT, HTTP_OPTIONS,HTTP_INVALID_VERB};
 
+enum class WellKnowContentType
+{
+    Json,
+    Xml,
+    PlainText,
+    Html,
+    Raw
+};
+
+
+
+
 ///\placeholder structure for entry in the http request.
 struct HttpHeader
 {

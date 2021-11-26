@@ -1,11 +1,18 @@
 #pragma once
+
+
 #define __WIN32__
 #ifdef __WIN32__
 #include <winsock2.h>
 #include <windows.h>
 struct WinsockInitializer{
-
+    WinsockInitializer() {
+        WSAData data;
+        WSAStartup(MAKEWORD(2, 2), &data);
+  
+    }
 };
+static WinsockInitializer OBJECT_LAUNCHER;
 #else
 typedef int SOCKET;
 #endif
