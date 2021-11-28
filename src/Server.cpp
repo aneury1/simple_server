@@ -495,3 +495,11 @@ int Server::SendResponse(int client, const std::string &buffer)
 {
     return send(client, buffer.c_str(), buffer.length(), 0);
 }
+
+int Server::SendResponse(int client, const HttpResponse& response)
+{
+
+
+
+    return 0;
+}

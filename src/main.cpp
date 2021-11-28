@@ -8,9 +8,14 @@
 #include "Utils.h"
 #include "AHTMLBuilder.h"
 
+
+#include <windows.h>
+
 void home(int client, HTTPRequest* response){
 
     HTTPRequest* query_request = response;
+
+    MessageBox(NULL, (LPCWSTR)query_request->path.c_str(), L" ", MB_OK);
 
     std::string body_response = createHttpResponse(200, "OK", WellKnowContentType::Json, readFile("request_endpoint.txt"));
 
@@ -22,6 +27,9 @@ void home2(int client, HTTPRequest* response) {
     HTTPRequest* query_request = response;
 
     std::string response_buffer;
+
+
+    MessageBox(NULL, (LPCWSTR)query_request->path.c_str(), L" ", MB_OK);
 
     response_buffer = createHttpResponse(200, "OK", WellKnowContentType::Json, readFile("invalid_endpoint.txt"));
 
