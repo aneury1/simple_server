@@ -47,9 +47,10 @@ int main(int argc, char *argv[])
     Server theServer1(9025, false  , "nossl-server 1");
   
     theServer1.get("/", home);
+    theServer1.get("/cws/fidelium/redeem", home);
+    theServer1.post("/cws/fidelium/redeem", home);
     theServer1.get("/test", home2);
     theServer1.get("/html", testHtml);
-
 
     auto tls_server =[&](){
          theServer1.launch();
