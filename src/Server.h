@@ -9,7 +9,6 @@ struct WinsockInitializer{
     WinsockInitializer() {
         WSAData data;
         WSAStartup(MAKEWORD(2, 2), &data);
-  
     }
 };
 static WinsockInitializer OBJECT_LAUNCHER;
@@ -42,6 +41,8 @@ typedef int SOCKET;
 
 #include "ServerHandler.h"
 #include "HttpRequest.h"
+#include "HttpResponse.h"
+
 
 #ifdef ___GUID_GENERATOR__
 
@@ -127,6 +128,10 @@ class Server
    static int SendResponse(int client, char *buffer, int len);
    
    static int SendResponse(int client, const std::string &buffer);
+
+   static int SendResponse(int client, const HttpResponse& response);
+
+   ////static SendDataOrStatus(int client, const char* buffer, int len, int defaultStatus = 400);
 
 
 };
