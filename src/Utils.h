@@ -9,6 +9,9 @@ std::string readFile(const char *str)
 {
   std::string ret;
   std::ifstream fs(str);
+   
+  if (fs.is_open() == false)
+	  return "NOT FOUND";
   // The function getline returns false if there are no more lines.
 	for (std::string str; std::getline(fs, str);) {
 	 // Process the line that has been read.
