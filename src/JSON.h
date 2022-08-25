@@ -1,24 +1,23 @@
 #pragma once
+
 #include <string>
 #include <vector>
+#include "Constant.h"
 
-
-///\ current Type that should be supported by these functions
-enum JSON_DATATYPE{JSON_NUMBER=1, JSON_STRING, JSON_OBJECT, JSON_ARRAY, JSON_BOOLEAN, JSON_NULL};
 
 class JSONObject;
 
 
 struct JSONArray
 {
-     std::vector<std::string> elements;
+    std::vector<std::string> elements;
 
-     void add( std::string value );
-     void add( float number);
-     void add( int   number);
-     void add( bool boolean_value);
+    void add(std::string value);
+    void add(float number);
+    void add(int   number);
+    void add(bool boolean_value);
 
-      std::string toString();
+    std::string toString();
 };
 
 
@@ -27,20 +26,20 @@ struct JsonPair
     std::string key;
     std::string value;
     JSON_DATATYPE type;
-    public:
-      JsonPair( std::string key, const char * value );
-      JsonPair( std::string key, std::string value );
-      JsonPair( std::string key, float number);
-      JsonPair( std::string key, int   number);
-      
-      JsonPair( std::string key, bool boolean_value);
-      JsonPair( std::string key /*json null*/);
-      JsonPair( std::string key, JSONArray list_of_values);
-      JsonPair( std::string key, JSONObject object);
-     
-     std::string toString();
-     const std::string getKey()const;    
-     const std::string getValue() const; 
+public:
+    JsonPair(std::string key, const char* value);
+    JsonPair(std::string key, std::string value);
+    JsonPair(std::string key, float number);
+    JsonPair(std::string key, int   number);
+
+    JsonPair(std::string key, bool boolean_value);
+    JsonPair(std::string key /*json null*/);
+    JsonPair(std::string key, JSONArray list_of_values);
+    JsonPair(std::string key, JSONObject object);
+
+    std::string toString();
+    const std::string getKey()const;
+    const std::string getValue() const;
 };
 
 
@@ -48,17 +47,17 @@ struct JsonPair
 
 class JSONObject
 {
-   std::vector<JsonPair *> key_value_list; 
+    std::vector<JsonPair*> key_value_list;
 
-   
 
-   public:
- 
+
+public:
+
     JSONObject();
-     
-    void addElement(JsonPair *pair);
 
-    JSONObject addElement(std::string key, const char *value);
+    void addElement(JsonPair* pair);
+
+    JSONObject addElement(std::string key, const char* value);
     JSONObject addElement(std::string key, std::string value);
     JSONObject addElement(std::string key, bool value);
     JSONObject addElement(std::string key, int value);

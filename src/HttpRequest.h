@@ -1,42 +1,23 @@
 #pragma once
-#include <string>
-using std::string;
 #include <vector>
-#include "HTTPPath.h"
+#include <string>
 
+using std::string;
+#include "SocketServerBase.h"
+#include "Constant.h"
+#include "HttpHeader.h"
+#include "HttpPath.h"
 
-///\this is the list of HTTP Verb that server support.
-enum class HTTP_VERB{HTTP_GET = 1, HTTP_POST, HTTP_PUT, HTTP_OPTIONS,HTTP_INVALID_VERB};
-
-enum class WellKnowContentType
+struct HttpRequest
 {
-    Json,
-    Xml,
-    PlainText,
-    Html,
-    Raw
+	std::vector<HttpHeader> headers;
+	string path;
+	std::string raw;
+	HTTP_VERB verb;
+	HTTPPath* http_path;
+	string body;
+	SocketServer::SocketFd client_connection;
+	HttpRequest(const char* str,std::string raw, SocketServer::SocketFd client_connection);
+	
 };
 
-
-
-
-///\placeholder structure for entry in the http request.
-struct HttpHeader
-{
-    string key;
-    string value;
-    HttpHeader(string bulk);
-    HttpHeader(string key, string value);
-    string toString();
-};
-
-//\the structure that handle the http request.
-struct HTTPRequest
-{
-   std::vector<HttpHeader> headers;
-   string path;
-   HTTP_VERB verb;
-   HTTPPath *http_path;
-   string body;
-   HTTPRequest(const char *str);
-};
