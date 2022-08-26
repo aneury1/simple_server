@@ -8,6 +8,9 @@
 #include "JSON.h"
 #include "HttpIdentifier.h"
 #include "HttpServer.h"
+#include "Typedefs.h"
+#include "Constant.h"
+#include "HttpResponse.h"
 using std::string;
 
 
@@ -64,6 +67,17 @@ static inline string remove_leading_space(string b) {
 }
 
 
+static const inline string HttpMethodToString(HTTP_VERB verb) {
+    switch (verb) {
+    case HTTP_VERB::HTTP_GET: return "GET";
+    case HTTP_VERB::HTTP_POST: return "POST";
+    case HTTP_VERB::HTTP_PUT: return "PUT";
+    case HTTP_VERB::HTTP_DELETE: return "DELETE";
+    case HTTP_VERB::HTTP_OPTIONS: return "OPTIONS";
+    case HTTP_VERB::HTTP_INVALID_VERB: return "NOT IMPLEMENTED";
+    }
+}
+
 
 static inline string getAllUser()
 {
@@ -102,7 +116,7 @@ static inline void handleHTTPResponse(int client, const char* query, int len)
     int rc = send(client, response_buffer.c_str(), response_buffer.size(), 0);
 }
 
-static inline void handleHTTPResponseWithMiddleWare(int client, const char* query, int len, std::map<HttpIdentifier, http_request_handler> middleware)
+static inline void handleHTTPResponseWithMiddleWare(int client, const char* query, int len,MiddleWareContainer middleware)
 {
     HttpRequest query_request(query,query,client);
     HttpIdentifier identifier(query_request.path, query_request.verb);
@@ -120,23 +134,7 @@ static inline void handleHTTPResponseWithMiddleWare(int client, const char* quer
 
 
 
-
-std::string readFile(const char* str)
-{
-    std::string ret;
-    std::ifstream fs(str);
-
-    if (fs.is_open() == false)
-        return "NOT FOUND";
-    // The function getline returns false if there are no more lines.
-    for (std::string str; std::getline(fs, str);) {
-        // Process the line that has been read.
-        ret += str;
-    }
-    return ret;
-}
-
-std::string getContentTypeString(WellKnowContentType type)
+static const inline std::string getContentTypeString(WellKnowContentType type)
 {
     switch (type)
     {
@@ -156,16 +154,7 @@ std::string getContentTypeString(WellKnowContentType type)
 
 
 
-
-///\todo: implement HTTP Response structure.
-struct HttpResponse
-{
-    HTTP_RESPONSE_STATUS status;
-    std::string payload;
-    WellKnowContentType contentType;
-};
-
-static const HttpResponse createResponse(HTTP_RESPONSE_STATUS status, std::string payload, WellKnowContentType contentType)
+static const inline HttpResponse createResponse(HTTP_RESPONSE_STATUS status, std::string payload, WellKnowContentType contentType)
 {
     HttpResponse response;
     response.status = status;
@@ -173,7 +162,7 @@ static const HttpResponse createResponse(HTTP_RESPONSE_STATUS status, std::strin
     response.contentType = contentType;
     return response;
 }
-
+ 
 static const std::string getResponseStringFromStatusCode(HTTP_RESPONSE_STATUS status)
 {
     switch (status)
@@ -268,7 +257,7 @@ std::string createHttpResponse(int statusCode, std::string message, WellKnowCont
 
 
 static inline
-std::string createHttpResponse(const HttpResponse& response)
+std::string createHttpResponseFromPayload(const HttpResponse& response)
 {
     string response_buffer;
     response_buffer += "HTTP/1.1";
@@ -283,5 +272,5 @@ std::string createHttpResponse(const HttpResponse& response)
     response_buffer += response.payload.c_str();
     return response_buffer;
 }
-
+ 
 

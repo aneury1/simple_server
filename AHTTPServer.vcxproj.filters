@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="third_party">
+      <UniqueIdentifier>{0FB18DF1-7B66-06E7-045B-00BE700FFDEA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\sqlite">
+      <UniqueIdentifier>{D04964A3-BC2D-25F9-258E-1F4C11910F7B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\tinyxml2">
+      <UniqueIdentifier>{A527DC97-91B6-6561-3AD5-795C26437607}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="third_party\wsclient">
+      <UniqueIdentifier>{27ADCB43-133C-550D-BC5A-6908A8C865B3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Constant.h" />
+    <ClInclude Include="src\HttpDefaults.h" />
+    <ClInclude Include="src\HttpHeader.h" />
+    <ClInclude Include="src\HttpIdentifier.h" />
+    <ClInclude Include="src\HttpPath.h" />
+    <ClInclude Include="src\HttpRequest.h" />
+    <ClInclude Include="src\HttpResponse.h" />
+    <ClInclude Include="src\HttpServer.h" />
+    <ClInclude Include="src\JSON.h" />
+    <ClInclude Include="src\ServerStdThread.h" />
+    <ClInclude Include="src\SocketServerBase.h" />
+    <ClInclude Include="src\Typedefs.h" />
+    <ClInclude Include="src\Utils.h" />
+    <ClInclude Include="src\third_party\sqlite\sqlite3.h">
+      <Filter>third_party\sqlite</Filter>
+    </ClInclude>
+    <ClInclude Include="src\third_party\sqlite\sqlite3ext.h">
+      <Filter>third_party\sqlite</Filter>
+    </ClInclude>
+    <ClInclude Include="src\third_party\tinyxml2\tinyxml2.h">
+      <Filter>third_party\tinyxml2</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\AHttpServer3.cpp" />
+    <ClCompile Include="src\HttpDefaults.cpp" />
+    <ClCompile Include="src\HttpHeader.cpp" />
+    <ClCompile Include="src\HttpIdentifier.cpp" />
+    <ClCompile Include="src\HttpPath.cpp" />
+    <ClCompile Include="src\HttpRequest.cpp" />
+    <ClCompile Include="src\HttpResponse.cpp" />
+    <ClCompile Include="src\HttpServer.cpp" />
+    <ClCompile Include="src\JSON.cpp" />
+    <ClCompile Include="src\ServerStdThread.cpp" />
+    <ClCompile Include="src\SocketServerBase.cpp" />
+    <ClCompile Include="src\third_party\tinyxml2\tinyxml2.cpp">
+      <Filter>third_party\tinyxml2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\third_party\wsclient\WebSockClient.cpp">
+      <Filter>third_party\wsclient</Filter>
+    </ClCompile>
+    <ClCompile Include="src\third_party\wsclient\WebSockClientUtils.cpp">
+      <Filter>third_party\wsclient</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

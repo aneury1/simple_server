@@ -3,6 +3,7 @@
 #include "ServerStdThread.h"
 #include "HttpServer.h"
 #include "Utils.h"
+#include "Typedefs.h"
 
 
 namespace {
@@ -37,7 +38,7 @@ namespace {
 
     void getDefaultAcceptorByNow(SocketServer::SocketFd  client, 
                                  ServerStatus& server_status,
-                                 std::map<HttpIdentifier, http_request_handler> connection_handler
+                                 ConnectionHandlerContainer connection_handler
         
         
         ) {
@@ -75,15 +76,19 @@ SocketServer* HttpServer::Start()
 }
 SocketServer* HttpServer::Listen()
 {
+    printf("Instance Running on Port => %ld\n", this->port);
+    for (auto it : this->connection_handler) 
+    {
+        HTTP_VERB verb = it.first.verb;
+        printf("METHOD: %s => Path[%s]\n", HttpMethodToString(verb).c_str(), it.first.path.c_str());
+    }
     while (this->server_status == ServerStatus::Running)
     {
         SocketServer::SocketFd  client = accept(server_socket_descriptor, nullptr, nullptr);
         
-        std::thread th(
-        
-        getDefaultAcceptorByNow,server_socket_descriptor,
-                             server_status, 
-                               connection_handler);
+        getDefaultAcceptorByNow(server_socket_descriptor,
+                                server_status, 
+                                connection_handler);
     }
     return this;
 }

@@ -4,11 +4,9 @@
 #include "HttpRequest.h"
 #include "HttpResponse.h"
 #include "HttpIdentifier.h"
+#include "Typedefs.h"
 
 
-typedef void (*handle_response_ptr)(int, char*, int);
-
-typedef void (*http_request_handler)(HttpRequest request);
 
 
 class HttpServer : public SocketServer
@@ -37,14 +35,17 @@ public:
 
 
 	HttpServer* Get(std::string path, http_request_handler);
+
 	HttpServer* Post(std::string path, http_request_handler);
+	
 	HttpServer* Put(std::string path, http_request_handler);
+	
 	HttpServer* Delete(std::string path, http_request_handler);
 
 
 protected:
 
-	std::map<HttpIdentifier, http_request_handler> connection_handler;
+	ConnectionHandlerContainer connection_handler;
 
 };
 

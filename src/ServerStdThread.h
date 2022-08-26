@@ -18,10 +18,6 @@ public:
 
 	}
 
-	ServerStdThread(ThreadFunction function, int client, const char* query, int len, std::map<HttpIdentifier, http_request_handler> connection_handler)
-		: thread(function, client, query, len, connection_handler) {
-
-	}
 
 	~ServerStdThread();
 
