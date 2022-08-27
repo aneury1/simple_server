@@ -16,6 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Constant.h" />
+    <ClInclude Include="src\DocumentBuilder.h" />
     <ClInclude Include="src\HttpDefaults.h" />
     <ClInclude Include="src\HttpHeader.h" />
     <ClInclude Include="src\HttpIdentifier.h" />
@@ -40,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AHttpServer3.cpp" />
+    <ClCompile Include="src\DocumentBuilder.cpp" />
     <ClCompile Include="src\HttpDefaults.cpp" />
     <ClCompile Include="src\HttpHeader.cpp" />
     <ClCompile Include="src\HttpIdentifier.cpp" />

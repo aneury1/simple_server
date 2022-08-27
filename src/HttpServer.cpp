@@ -49,15 +49,13 @@ namespace {
         int rc = recv(client, buffer, 4096*16, 0);
 
 
-        auto lambda = [&]() {
+       
             if (connection_handler.size() <= 0)
                 handleHTTPResponse(client, buffer, rc);
             else
                 handleHTTPResponseWithMiddleWare(client, buffer, rc, connection_handler);
-        };
-
-        
-        
+       
+   
     }
 }
 
