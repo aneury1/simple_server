@@ -25,6 +25,7 @@
     <ClInclude Include="src\HttpResponse.h" />
     <ClInclude Include="src\HttpServer.h" />
     <ClInclude Include="src\JSON.h" />
+    <ClInclude Include="src\Router.h" />
     <ClInclude Include="src\ServerStdThread.h" />
     <ClInclude Include="src\SocketServerBase.h" />
     <ClInclude Include="src\Typedefs.h" />
@@ -50,6 +51,7 @@
     <ClCompile Include="src\HttpResponse.cpp" />
     <ClCompile Include="src\HttpServer.cpp" />
     <ClCompile Include="src\JSON.cpp" />
+    <ClCompile Include="src\Router.cpp" />
     <ClCompile Include="src\ServerStdThread.cpp" />
     <ClCompile Include="src\SocketServerBase.cpp" />
     <ClCompile Include="src\third_party\tinyxml2\tinyxml2.cpp">

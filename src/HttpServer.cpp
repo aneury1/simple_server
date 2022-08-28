@@ -36,27 +36,7 @@ namespace {
    
 
 
-    void getDefaultAcceptorByNow(SocketServer::SocketFd  client, 
-                                 ServerStatus& server_status,
-                                 ConnectionHandlerContainer connection_handler
-        
-        
-        ) {
-       
-        
-        char buffer[4096*16] = { 0x00 };
-       
-        int rc = recv(client, buffer, 4096*16, 0);
-
-
-       
-            if (connection_handler.size() <= 0)
-                handleHTTPResponse(client, buffer, rc);
-            else
-                handleHTTPResponseWithMiddleWare(client, buffer, rc, connection_handler);
-       
-   
-    }
+ 
 }
 
 
@@ -82,12 +62,21 @@ SocketServer* HttpServer::Listen()
     }
     while (this->server_status == ServerStatus::Running)
     {
+       
         SocketServer::SocketFd  client = accept(server_socket_descriptor, nullptr, nullptr);
-        
-        getDefaultAcceptorByNow(server_socket_descriptor,
-                                server_status, 
-                                connection_handler);
+
+        char buffer[4096 * 16] = { 0x00 };
+
+        int rc = recv(client, buffer, 4096 * 16, 0);
+
+        printf("%s", buffer);
+        if (connection_handler.size() <= 0)
+            handleHTTPResponse(client, buffer, rc);
+        else
+            handleHTTPResponseWithMiddleWare(client, buffer, rc, connection_handler);
+        closesocket(client);
     }
+
     return this;
 }
 

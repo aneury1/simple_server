@@ -26,6 +26,32 @@ enum class WellKnowContentType
     PlainText,
     Html,
     Raw
+#if 0
+    { "txt", "text/plain" },
+    { "css", "text/css" },
+    { "csv", "text/csv" },
+    { "htm", "text/html" },
+    { "html", "text/html" },
+    { "xml", "text/xml" },
+    { "js", "text/javascript" }, // Technically it should be application/javascript (RFC 4329), but IE8 struggles with that
+    { "xhtml", "application/xhtml+xml" },
+    { "json", "application/json" },
+    { "pdf", "application/pdf" },
+    { "zip", "application/zip" },
+    { "tar", "application/x-tar" },
+    { "gif", "image/gif" },
+    { "jpeg", "image/jpeg" },
+    { "jpg", "image/jpeg" },
+    { "tiff", "image/tiff" },
+    { "tif", "image/tiff" },
+    { "png", "image/png" },
+    { "svg", "image/svg+xml" },
+    { "ico", "image/x-icon" },
+    { "swf", "application/x-shockwave-flash" },
+    { "mp3", "audio/mpeg" },
+    { "wav", "audio/x-wav" },
+    { "ttf", "font/ttf" },
+#endif
 };
 
 
