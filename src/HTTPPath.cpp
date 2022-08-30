@@ -39,7 +39,7 @@ HTTPPath::HTTPPath(string path)
         if (path[iter] == '/')
         {
             path_parsed.emplace_back(tmp);
-            printf("entry in path: %s", tmp.c_str());
+           //// printf("entry in path: %s", tmp.c_str());
             tmp = "";
         }
         else

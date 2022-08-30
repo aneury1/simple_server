@@ -4,9 +4,17 @@
 #include "HttpDefaults.h"
 
 
+#include <map>
+#include <iostream>
+#include "Router.h"
+
 int main() {
 
-	auto theServer = new HttpServer{ 9991 };
+
+	DynamicRoute route("/home/:id<int>/v1/:name<str>");
+
+
+	/*auto theServer = new HttpServer{9001};
 	    theServer
 		 ->Get("/favicon.ico", http_send_static_html_file_favicon)
 		->Get("/file", http_send_static_file)
@@ -16,6 +24,6 @@ int main() {
 
 		->Start()
 		->Listen();
-
+		*/
 	return 0;
 }
