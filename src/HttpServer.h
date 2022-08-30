@@ -7,6 +7,13 @@
 #include "Typedefs.h"
 
 
+/// <summary>
+/// 
+/// </summary>
+struct ConnetionWaiter {
+
+};
+
 
 
 class HttpServer : public SocketServer
