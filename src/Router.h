@@ -2,7 +2,7 @@
 #include <string>
 #include "HttpPath.h"
 #include <iostream>
-
+#if 0
 
 enum class RouterType {
 	Static,
@@ -29,12 +29,13 @@ struct DynamicRoute : public Route{
 		for (auto it : em) {
 			std::cout << it << "\n";
 		}
-
-	
 	}	
+
 	virtual RouterType getType()const override{
 			return RouterType::Dynamic;
 	}
 
 };
 struct FileRoute : public Route{};
+
+#endif

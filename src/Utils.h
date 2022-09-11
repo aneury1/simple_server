@@ -16,6 +16,47 @@ using std::string;
 
 #pragma warning(disable : 4996)
 
+#include <sstream>
+#include <string>
+
+static inline std::string convertUrlToFormatter(const std::string& url)
+{
+    std::stringstream res;
+    std::string tmp;
+    int ipos = 0;
+    int cpos = 0;
+
+    auto cv = [&] {
+        if (tmp.length() > 0) {
+            if (atol(tmp.c_str()) != 0) {
+                res << "/<int>";
+            }
+            else {
+                if (tmp.length() == 1 && tmp[0] == '0')
+                {
+                    res << "/<int>";
+                    return;
+                }
+                res << "/<str>";
+            }
+        }
+        tmp = "";
+    };
+
+
+    for (auto i : url) {
+        if (i == '/') {
+            cv();
+        }
+        else {
+            tmp += i;
+        }
+    }
+
+    cv();
+    return res.str();
+}
+
 
 static inline bool compare_ignore_case(string s1, string s2)
 {
@@ -139,6 +180,8 @@ static inline void handleHTTPResponse(int client, const char* query, int len)
     std::cout << "Without Connection handler\n" << query << "\n\n\n";
     HttpRequest query_request(query,query, client);
     string response_buffer;
+    std::string format = convertUrlToFormatter(query_request.path);
+    std::cout <<"url->" << format;
     response_buffer += "HTTP/1.1 200 OK\r\n";
     response_buffer += "Content-Type: application/json\r\n";
     string body_response;

@@ -7,12 +7,7 @@
 #include "Typedefs.h"
 
 
-/// <summary>
-/// 
-/// </summary>
-struct ConnetionWaiter {
-
-};
+ 
 
 
 
