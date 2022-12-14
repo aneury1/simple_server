@@ -376,3 +376,19 @@ static const inline std::string base64Encode(const void* data, size_t length) {
     }
     return output;
 }
+
+static inline std::string toLowerCaseString(std::string s) {
+    std::stringstream ret;
+    for (auto it : s)
+        ret << std::tolower(it);
+    return ret.str();
+}
+
+static inline UriScheme getScheme(std::string url) {
+    url = toLowerCaseString(url);
+    std::string::iterator it = url.begin();
+    if (std::equal(it, it + 6, "ws://"))return UriScheme::Wss;
+    if (std::equal(it, it + 8, "https://"))return UriScheme::Https;
+    if (std::equal(it, it + 7, "http://"))return UriScheme::Http;
+    return UriScheme::Uknown;
+}

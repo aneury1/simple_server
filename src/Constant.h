@@ -109,3 +109,47 @@ audio/x-mpeg-3
 video/mpeg
 video/x-mpeg
 */
+
+enum class UriScheme {
+    Http,
+    Https,
+    Wss,
+    Uknown
+};
+
+
+enum WebsocketOpcode {
+    continuation = 0x0,
+    text = 0x1,
+    binary = 0x2,
+    rsv3 = 0x3,
+    rsv4 = 0x4,
+    rsv5 = 0x5,
+    rsv6 = 0x6,
+    rsv7 = 0x7,
+    close = 0x8,
+    ping = 0x9,
+    pong = 0xA,
+    control_rsvb = 0xB,
+    control_rsvc = 0xC,
+    control_rsvd = 0xD,
+    control_rsve = 0xE,
+    control_rsvf = 0xF,
+
+    CONTINUATION = 0x0,
+    TEXT = 0x1,
+    BINARY = 0x2,
+    RSV3 = 0x3,
+    RSV4 = 0x4,
+    RSV5 = 0x5,
+    RSV6 = 0x6,
+    RSV7 = 0x7,
+    CLOSE = 0x8,
+    PING = 0x9,
+    PONG = 0xA,
+    CONTROL_RSVB = 0xB,
+    CONTROL_RSVC = 0xC,
+    CONTROL_RSVD = 0xD,
+    CONTROL_RSVE = 0xE,
+    CONTROL_RSVF = 0xF
+};
