@@ -17,6 +17,7 @@
   <ItemGroup>
     <ClInclude Include="src\Constant.h" />
     <ClInclude Include="src\DocumentBuilder.h" />
+    <ClInclude Include="src\HttpConnection.h" />
     <ClInclude Include="src\HttpDefaults.h" />
     <ClInclude Include="src\HttpHeader.h" />
     <ClInclude Include="src\HttpIdentifier.h" />
@@ -30,6 +31,7 @@
     <ClInclude Include="src\SocketServerBase.h" />
     <ClInclude Include="src\Typedefs.h" />
     <ClInclude Include="src\Utils.h" />
+    <ClInclude Include="src\WebSocket.h" />
     <ClInclude Include="src\third_party\sqlite\sqlite3.h">
       <Filter>third_party\sqlite</Filter>
     </ClInclude>
@@ -43,6 +45,7 @@
   <ItemGroup>
     <ClCompile Include="src\AHttpServer3.cpp" />
     <ClCompile Include="src\DocumentBuilder.cpp" />
+    <ClCompile Include="src\HttpConnection.cpp" />
     <ClCompile Include="src\HttpDefaults.cpp" />
     <ClCompile Include="src\HttpHeader.cpp" />
     <ClCompile Include="src\HttpIdentifier.cpp" />
@@ -54,6 +57,7 @@
     <ClCompile Include="src\Router.cpp" />
     <ClCompile Include="src\ServerStdThread.cpp" />
     <ClCompile Include="src\SocketServerBase.cpp" />
+    <ClCompile Include="src\WebSocket.cpp" />
     <ClCompile Include="src\third_party\tinyxml2\tinyxml2.cpp">
       <Filter>third_party\tinyxml2</Filter>
     </ClCompile>

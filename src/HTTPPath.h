@@ -18,3 +18,21 @@ struct HTTPPath
    /// Route convertToRoute();
 
 };
+
+
+
+/// <summary>
+///  types[ <int:id> <str:id> <obj:id::obj> ] 
+/// </summary>
+
+struct HttpPath {
+    std::string current;
+    std::vector<HttpPath> children;
+    std::string convert_to_type();
+};
+
+
+
+
+
+
