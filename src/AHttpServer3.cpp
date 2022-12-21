@@ -63,6 +63,8 @@ int main() {
 		  ->Get("/mp3", http_send_static_mp3_file)
 		  ->Get("/horse.mp3", http_send_static_mp3_file)
 		  ->Get("/html", http_send_static_html_file)
+		  ->Get("/printer", http_send_default_printer)
+		  ->Get("/guids", http_send_default_default_session_guids)
 		  ->Start()
 		  ->Listen();
 		 
