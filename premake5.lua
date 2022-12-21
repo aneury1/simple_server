@@ -9,7 +9,10 @@ project "AHTTPServer"
 
    files { 
        --"**.h", "**.c", "**.cpp",
-        "./src/**.cpp", "./src/**.h" }
+        "./src/**.cpp", "./src/**.h",
+        "./src/third_party/**.h",
+        "./src/third_party/**.c",
+    }
 
 filter "configurations:Debug"
     defines { "DEBUG" }

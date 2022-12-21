@@ -58,6 +58,9 @@
     <ClCompile Include="src\ServerStdThread.cpp" />
     <ClCompile Include="src\SocketServerBase.cpp" />
     <ClCompile Include="src\WebSocket.cpp" />
+    <ClCompile Include="src\third_party\sqlite\sqlite3.c">
+      <Filter>third_party\sqlite</Filter>
+    </ClCompile>
     <ClCompile Include="src\third_party\tinyxml2\tinyxml2.cpp">
       <Filter>third_party\tinyxml2</Filter>
     </ClCompile>

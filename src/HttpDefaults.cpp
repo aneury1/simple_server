@@ -1,7 +1,17 @@
 #include <iostream>
 #include "Utils.h"
-
 #include "HttpDefaults.h"
+
+#include "third_party/sqlite/sqlite3.h"
+
+
+
+void OpenDB() {
+    sqlite3* db;
+    sqlite3_open("myDB.db", &db);
+    sqlite3_close(db);
+}
+
 
 void http_send_static_html_file(HttpRequest query_request) {
 
@@ -102,7 +112,7 @@ std::string getPrinters()
     DWORD dwReturned;
     PRINTER_INFO_1* pInfo;
     
-    
+    OpenDB();
     fnReturn = EnumPrinters(
         PRINTER_ENUM_LOCAL | PRINTER_ENUM_CONNECTIONS,
         NULL,
