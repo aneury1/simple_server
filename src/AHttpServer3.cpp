@@ -1,60 +1,51 @@
 #include <string>
 #include <sstream>
 #include <cstdint>
+#include "HttpServer.h"
+#include "HttpDefaults.h"
+#include "ASqlWrapper.h"
 
-bool char_is_in_this_group(char ch, std::string s) {
-	for (auto it : s)
-		if (it == ch)return true;
-	return false;
-}
+#include <thread>
+using std::thread;
 
-bool char_is_printable(char ch) {
-	return ch < 32 || ch >= 127;
-}
+class Executors {
 
+};
 
-class AJsonParser {
-
-    uint32_t current_offset_position;
-	uint32_t token_next_position;
-	int32_t  parent_token;
-
-
-
+class ScheduledThreadPoolService {
+	std::vector<std::thread> threads;
 public:
-	AJsonParser(std::string raw) {
-
-	}
-
-	enum class AJsonDatatype {
-		Undefined,
-		Null,
-		Object,
-		Array,
-		String,
-		Primitive
-	};
-
-	struct AJsonToken {
-		AJsonDatatype type;
-		int start_pos;
-		int end_pos;
-		int length;
-		bool is_parent;
-	};
 
 };
 
 
-#include "HttpServer.h"
-#include "HttpDefaults.h"
 
 
 
 
 int main() {
-	
- 
+
+  
+	 DBTable *table = create_table("LOGS", true);
+	 table = add_column(table, "IDD", 1, " ");
+	 table = add_column(table, "TEXT", 1, " ");
+	 table = add_column(table, "VALUE", 1, " ");
+	 table = add_column(table, "IDTABLE", 1, " ");
+
+    
+	  
+
+	/// printf("%ld", CountColumn(table));
+	 char* bff = generate_create_table_for_sqlite(table);
+	 printf("SQL =%s ", bff);
+	 delete[]bff;
+	 bff = nullptr;
+
+	 for (;;);
+
+
+#if 0
+
 
 	  auto theServer = new HttpServer{9091};
 	  theServer
@@ -67,7 +58,7 @@ int main() {
 		  ->Get("/guids", http_send_default_default_session_guids)
 		  ->Start()
 		  ->Listen();
-		 
+#endif	 
 
 	return 0;
 }

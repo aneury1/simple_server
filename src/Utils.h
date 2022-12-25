@@ -404,3 +404,23 @@ static inline void GenGUIDId(char *uidCtx) {
         rand(), rand(), rand());		// Generates a 96-bit Hex number
      
 }
+
+
+struct Buffer {
+    unsigned char* buffer;
+    int length;
+};
+
+Buffer* bufferFrom(unsigned char* ptr, int len) {
+    Buffer* ret = (Buffer*)malloc(len);
+    memset(ret, 0x00, len);
+    memcpy(ret, ptr, len);
+    return ret;
+}
+
+Buffer* bufferFrom(Buffer* buffer) {
+    if (buffer)
+        return bufferFrom(buffer->buffer, buffer->length);
+    return NULL;
+}
+

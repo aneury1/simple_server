@@ -15,6 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ASqlWrapper.h" />
     <ClInclude Include="src\Constant.h" />
     <ClInclude Include="src\DocumentBuilder.h" />
     <ClInclude Include="src\HttpConnection.h" />
@@ -44,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AHttpServer3.cpp" />
+    <ClCompile Include="src\ASqlWrapper.cpp" />
     <ClCompile Include="src\DocumentBuilder.cpp" />
     <ClCompile Include="src\HttpConnection.cpp" />
     <ClCompile Include="src\HttpDefaults.cpp" />
