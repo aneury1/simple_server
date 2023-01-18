@@ -11,6 +11,7 @@
 #include "Typedefs.h"
 #include "Constant.h"
 #include "HttpResponse.h"
+#include <functional>
 using std::string;
 
 
@@ -423,4 +424,50 @@ static inline Buffer* bufferFrom(Buffer* buffer) {
         return bufferFrom(buffer->buffer, buffer->length);
     return NULL;
 }
+
+
+template<typename Type, typename Original>
+static inline std::vector<Type> FlatMap(std::vector<std::vector<Original>>ctx, Type(*fn)(Original)) {
+    std::vector<Type> ret;
+    for (auto i : ctx)
+        ret.emplace_back(fn(i));
+    return ret;
+}
+
+
+
+
+template<typename Type, typename Original>
+static inline std::vector<Type> MapTo(std::vector<Original>ctx, Type(*fn)(Original)) {
+    std::vector<Type> ret;
+    for (auto i : ctx)
+        ret.emplace_back(fn(i));
+    return ret;
+}
+template<typename Type, typename Original>
+static inline std::vector<Type> MapTo(std::string ctx, Type(*fn)(Original)) {
+    std::vector<Type> ret;
+    for (auto i : ctx)
+        ret.emplace_back(fn(i));
+    return ret;
+}
+
+template<typename Type, typename Original,typename Func>
+static inline std::vector<Type> MapTo(std::string ctx, Func&& fn) {
+    std::vector<Type> ret;
+    for (auto i : ctx)
+        ret.emplace_back(fn(i));
+    return ret;
+}
+
+
+
+template<typename Original>
+static inline std::vector<Original> FilterTo(std::vector<Original>ctx, bool (*fn)(Original)) {
+    std::vector<Original> ret;
+    for (auto i : ctx)
+        if (fn(i))ret.emplace_back(i);
+    return ret;
+}
+
 

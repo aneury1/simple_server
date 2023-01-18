@@ -16,8 +16,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ASqlWrapper.h" />
+    <ClInclude Include="src\AWSSignature.h" />
     <ClInclude Include="src\Constant.h" />
+    <ClInclude Include="src\CryptoAlgos.h" />
     <ClInclude Include="src\DocumentBuilder.h" />
+    <ClInclude Include="src\HOF.h" />
     <ClInclude Include="src\HttpConnection.h" />
     <ClInclude Include="src\HttpDefaults.h" />
     <ClInclude Include="src\HttpHeader.h" />
@@ -33,6 +36,7 @@
     <ClInclude Include="src\Typedefs.h" />
     <ClInclude Include="src\Utils.h" />
     <ClInclude Include="src\WebSocket.h" />
+    <ClInclude Include="src\iso8583.h" />
     <ClInclude Include="src\third_party\sqlite\sqlite3.h">
       <Filter>third_party\sqlite</Filter>
     </ClInclude>
@@ -60,6 +64,7 @@
     <ClCompile Include="src\ServerStdThread.cpp" />
     <ClCompile Include="src\SocketServerBase.cpp" />
     <ClCompile Include="src\WebSocket.cpp" />
+    <ClCompile Include="src\iso8583.cpp" />
     <ClCompile Include="src\third_party\sqlite\sqlite3.c">
       <Filter>third_party\sqlite</Filter>
     </ClCompile>
