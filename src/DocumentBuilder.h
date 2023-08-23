@@ -18,3 +18,12 @@ struct DocumentParameter {
 		return stream.str();
 	}
 };
+
+
+
+struct Tag{
+std::string tag_name;
+std::string tag_value;
+std::unordered_map<std::string, std::string> attributes;
+   std::string toString();
+};

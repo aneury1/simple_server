@@ -1,5 +1,5 @@
 #pragma once
-
+#include <stdio.h>
 typedef unsigned char PrimitiveByteValue;
 
 struct ByteValue {
@@ -16,7 +16,7 @@ enum ConverterIdx {
 };
 
 typedef int CVX_ID;
-
+#if 0 
 
 struct ConvertFn {
 	CVX_ID id;
@@ -48,3 +48,5 @@ static const ConvertFn DefaultConverters[] =
 
 
 void testIso8583();
+
+#endif

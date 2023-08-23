@@ -21,11 +21,11 @@
     <ClInclude Include="src\CryptoAlgos.h" />
     <ClInclude Include="src\DocumentBuilder.h" />
     <ClInclude Include="src\HOF.h" />
+    <ClInclude Include="src\HTTPPath.h" />
     <ClInclude Include="src\HttpConnection.h" />
     <ClInclude Include="src\HttpDefaults.h" />
     <ClInclude Include="src\HttpHeader.h" />
     <ClInclude Include="src\HttpIdentifier.h" />
-    <ClInclude Include="src\HttpPath.h" />
     <ClInclude Include="src\HttpRequest.h" />
     <ClInclude Include="src\HttpResponse.h" />
     <ClInclude Include="src\HttpServer.h" />
@@ -51,11 +51,11 @@
     <ClCompile Include="src\AHttpServer3.cpp" />
     <ClCompile Include="src\ASqlWrapper.cpp" />
     <ClCompile Include="src\DocumentBuilder.cpp" />
+    <ClCompile Include="src\HTTPPath.cpp" />
     <ClCompile Include="src\HttpConnection.cpp" />
     <ClCompile Include="src\HttpDefaults.cpp" />
     <ClCompile Include="src\HttpHeader.cpp" />
     <ClCompile Include="src\HttpIdentifier.cpp" />
-    <ClCompile Include="src\HttpPath.cpp" />
     <ClCompile Include="src\HttpRequest.cpp" />
     <ClCompile Include="src\HttpResponse.cpp" />
     <ClCompile Include="src\HttpServer.cpp" />
