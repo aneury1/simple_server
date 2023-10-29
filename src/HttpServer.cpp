@@ -4,14 +4,22 @@
 namespace {
 	const int	MAX_CONNECTIONS = 1000;
 }
+
+HttpServer HttpServer::registerNewStaticEndpoint(std::string endpoint, ParserEndpoint parsed){
+	registered_endpoint[endpoint] = parsed;
+	return (*this);
+}
+
 HttpServer::HttpServer(int port)
 {
 
+#ifdef WIN32
 	WSADATA wsaData;
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
 		std::cerr << "Failed to initialize WinSock" << std::endl;
 		 
 	}
+#endif
 
 	// Create a socket for incoming connections
 	 serverSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -51,7 +59,7 @@ int HttpServer::start()
 		// Accept incoming connection
 		sockaddr_in clientAddr{};
 		int clientAddrLen = sizeof(clientAddr);
-		SOCKET clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddr, &clientAddrLen);
+		SOCKET clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddr,(socklen_t *)&clientAddrLen);
 		if (clientSocket == INVALID_SOCKET) {
 			std::cerr << "Failed to accept client connection" << std::endl;
 			continue;
@@ -69,7 +77,8 @@ int HttpServer::start()
 
 	// Close the server socket
 	closesocket(serverSocket);
-
+#ifdef WIN32
 	// Cleanup WinSock
 	WSACleanup();
+	#endif
 }

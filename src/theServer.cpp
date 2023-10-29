@@ -1,10 +1,29 @@
- #include "TheServer.h"
-
+#if 0
 #include <iostream>
 #include <string>
 #include <unordered_map>
+#ifdef WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#else
+#warning "build for nowindows"
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+
+#define SOCKET_ERROR -1
+#define INVALID_SOCKET -1
+#define closesocket close
+typedef int SOCKET;
+#endif
+
+
 #include <thread>
 #include <vector>
 #include <iostream>
@@ -14,7 +33,38 @@
 #include <regex>
 #include <sstream>
 
+
 #pragma comment(lib, "ws2_32.lib")
+
+
+struct APIInitializer{
+
+    APIInitializer(){
+  #ifdef WIN32
+#ifdef __WINDOWS__
+		WSADATA wsaData;
+		if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
+			std::cerr << "Failed to initialize WinSock" << std::endl;
+			return  ;
+		}
+#endif
+  #endif
+
+	}
+	~APIInitializer(){
+  #ifdef WIN32
+#ifdef __WINDOWS__
+		// Close the server socket
+		closesocket(serverSocket);
+
+		// Cleanup WinSock
+		WSACleanup();
+#endif
+  #endif
+	}
+
+};
+
 
 const int MAX_CONNECTIONS = 10000;
 
@@ -282,14 +332,7 @@ class HttpServer {
 public:
 
 	HttpServer() {
-#define __WINDOWS__
-#ifdef __WINDOWS__
-		WSADATA wsaData;
-		if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
-			std::cerr << "Failed to initialize WinSock" << std::endl;
-			return  ;
-		}
-#endif
+
 	}
 
 	void RunServer() {
@@ -299,7 +342,7 @@ public:
 			// Accept incoming connection
 			sockaddr_in clientAddr{};
 			int clientAddrLen = sizeof(clientAddr);
-			SOCKET clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddr, &clientAddrLen);
+			SOCKET clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddr,(socklen_t *) &clientAddrLen);
 			if (clientSocket == INVALID_SOCKET) {
 				std::cerr << "Failed to accept client connection" << std::endl;
 				continue;
@@ -318,14 +361,7 @@ public:
 
 
 	~HttpServer() {
-#define __WINDOWS__
-#ifdef __WINDOWS__
-		// Close the server socket
-		closesocket(serverSocket);
 
-		// Cleanup WinSock
-		WSACleanup();
-#endif
 	}
 
 	int init() {
@@ -438,3 +474,4 @@ int main_server()
 #endif
 	return 0;
 }
+#endif 

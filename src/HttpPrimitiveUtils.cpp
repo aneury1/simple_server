@@ -3,11 +3,29 @@
 
 #define TEST_STATIC_FILE "C:\\Users\\aneur\\Desktop\\AHTTPSERVER\\tests\\render_test\\index.html"
 
-ParserEndpoint parseRequest(Request request, ParserEndpoint notFoundHandler) {
+
+
+
+std::unordered_map<std::string, std::string> parseUrlParams(std::string url){
+	std::unordered_map<std::string, std::string> ret;
+	if(url.find("?")!=std::string::npos){
+		std::cout <<"WE need to parse this params...\n"<<url<<"\n";
+	}
+	return ret;
+}
+
+
+
+
+
+
+ParserEndpoint parseRequest(Request& request, ParserEndpoint notFoundHandler) {
 	ParserEndpoint ret = nullptr;
 	std::string url = request.url;
 	bool found = false;
-	std::map<std::string, std::string> parameters;  // Create an empty map to store the parameters
+	std::unordered_map<std::string, std::string> parameters;  // Create an empty map to store the parameters
+
+    request.urlParams = parseUrlParams(request.url);
 
 	for (const auto& endpoint : registered_endpoint) {
 		std::string pattern = endpoint.first;
@@ -36,8 +54,11 @@ ParserEndpoint parseRequest(Request request, ParserEndpoint notFoundHandler) {
 
 		if (!notFoundHandler) {
 			notFoundHandler = [](Request*)->Response* {
-				return new Response();
-				};
+				auto response = new Response();
+			    response->body = "<b>EMPTY REQUEST</b>";
+				response->headers["Content-Type"]="text/html";
+				return response;
+		};
 		}
 
 		ret = notFoundHandler;
@@ -46,6 +67,7 @@ ParserEndpoint parseRequest(Request request, ParserEndpoint notFoundHandler) {
 
 	// Store the parameters in the Request object
 	request.parameters = parameters;
+
 
 	return ret;
 }
@@ -119,12 +141,18 @@ void handleClient(ClientInfo* client) {
 
 		auto headers = parseHeaders(request);
 		auto head = parseRequest(request);
-
+		Request thisRequest;
+		thisRequest.url = head["url"];
+		thisRequest.parameters = headers;
+        auto res = parseRequest(thisRequest, nullptr);
+		
 		std::string stream;
 
 
         std::cout <<"Request to Url: "<< head["url"]<<"\n";
-
+//        for(auto it : headers)
+//		 std::cout << it.first <<": "<< it.second<<"\n";
+  
 
 #ifdef __JUST_TEST
 		stream += "Http Verb and URL \n";
@@ -135,19 +163,26 @@ void handleClient(ClientInfo* client) {
 			stream += header.first + ": " + header.second + "\n";
 		}
 #else
-        stream += readWholeFile(TEST_STATIC_FILE);
+    //    if(res)
+	//	  stream += 
+    //    else
+	//	  stream += readWholeFile(TEST_STATIC_FILE);
 #endif
 
+        auto workedResponse = res(&thisRequest);
+
 		// Process the request and generate a response
-		std::string response = "HTTP/1.1 200 OK\r\nContent-Length: ";
-		response += std::to_string(stream.size());
-		response += "Content-Type: text/html; charset=utf-8";
+		std::string response = "HTTP/1.1 200 OK\r\n";
+		response += ("Content-Length: ")+workedResponse->headers["Content-Length"]+"\r\n";
+		response += ("Content-Type: "+ workedResponse->headers["Content-Type"]);
 		response += "\r\n\r\n";
-		response += stream;
+		response += workedResponse->body;
 		//12\r\n\r\nHello World!";
 
 		// Send the response back to the client
-		send(client->sockfd, response.c_str(), response.length(), 0);
+		int querysend = send(client->sockfd, response.c_str(), response.length(), 0);
+
+		//std::cout <<"Send: "<< querysend <<"\n" << ;
 	}
 
 	// Close the client connection
