@@ -50,7 +50,7 @@ Response* requestAnyJSFileinRoot(Request* request){
 	response->headers["Content-Type"]="text/javascript; charset=utf-8";
 	response->headers["Content-Length"]= std::to_string(buffer.size());
 	response->statusCode = 200;
-	return response;
+	return response;///comment
 }
 Response* requestAnyJSONFileinRoot(Request* request){
 
