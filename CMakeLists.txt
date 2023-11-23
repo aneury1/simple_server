@@ -4,7 +4,8 @@ project(AHTTPServer LANGUAGES CXX)
 
 file(GLOB_RECURSE SRCS src/*.cpp)
 
-add_executable(${PROJECT_NAME} ${SRCS})
+add_executable(${PROJECT_NAME} ${SRCS}
+    src/htmlbuilder.h src/htmlbuilder.cpp)
 
 
 

@@ -8,40 +8,34 @@
 #include <ws2tcpip.h>
 #else
 #warning "build for nowindows"
-#include <sys/socket.h>
-#include <sys/types.h>
+#include <arpa/inet.h>
 #include <fcntl.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <arpa/inet.h>
+#include <string.h>
 #include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
 #endif
 
-
-#include <thread>
-#include <vector>
 #include <iostream>
-#include <string>
-#include <vector>
 #include <map>
 #include <regex>
 #include <sstream>
+#include <string>
+#include <thread>
+#include <vector>
 
 #include "HttpServerMetada.h"
 #include "IOUtils.h"
 
 struct HttpServer
 {
-	SOCKET serverSocket;
+    SOCKET serverSocket;
+
 public:
+    HttpServer registerNewStaticEndpoint(std::string endpoint, ParserEndpoint);
 
-   
-   HttpServer registerNewStaticEndpoint(std::string endpoint, ParserEndpoint);
-
-	HttpServer(int port);
-	int start();
-
+    HttpServer(int port);
+    int start();
 };
-

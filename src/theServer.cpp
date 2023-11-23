@@ -7,15 +7,14 @@
 #include <ws2tcpip.h>
 #else
 #warning "build for nowindows"
-#include <sys/socket.h>
-#include <sys/types.h>
+#include <arpa/inet.h>
 #include <fcntl.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <arpa/inet.h>
+#include <string.h>
 #include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #define SOCKET_ERROR -1
 #define INVALID_SOCKET -1
@@ -23,16 +22,13 @@
 typedef int SOCKET;
 #endif
 
-
-#include <thread>
-#include <vector>
 #include <iostream>
-#include <string>
-#include <vector>
 #include <map>
 #include <regex>
 #include <sstream>
-
+#include <string>
+#include <thread>
+#include <vector>
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -40,7 +36,7 @@ typedef int SOCKET;
 struct APIInitializer{
 
     APIInitializer(){
-  #ifdef WIN32
+#ifdef WIN32
 #ifdef __WINDOWS__
 		WSADATA wsaData;
 		if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
@@ -48,11 +44,11 @@ struct APIInitializer{
 			return  ;
 		}
 #endif
-  #endif
+#endif
 
 	}
 	~APIInitializer(){
-  #ifdef WIN32
+#ifdef WIN32
 #ifdef __WINDOWS__
 		// Close the server socket
 		closesocket(serverSocket);
@@ -60,7 +56,7 @@ struct APIInitializer{
 		// Cleanup WinSock
 		WSACleanup();
 #endif
-  #endif
+#endif
 	}
 
 };
@@ -403,7 +399,6 @@ int main_server()
 	server.init();
 	server.RunServer();
 
-
 #if 0
 	int port = 9191;
 	// Initialize WinSock
@@ -474,4 +469,4 @@ int main_server()
 #endif
 	return 0;
 }
-#endif 
+#endif
