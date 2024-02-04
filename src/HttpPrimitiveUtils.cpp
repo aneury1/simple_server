@@ -6,9 +6,15 @@
 std::unordered_map<std::string, std::string> parseUrlParams(std::string url)
 {
     std::unordered_map<std::string, std::string> ret;
-    if (url.find("?") != std::string::npos) {
-        std::cout << "WE need to parse this params...\n" << url << "\n";
+    // if (url.find("?") != std::string::npos) {
+    //     std::cout << "WE need to parse this params...\n" << url << "\n";
+    // }
+    size_t pos = url.find("?");
+    if(pos!=std::string::npos){
+        std::string paramList = url.substr(pos,url.size()-pos);
+        std::cout << paramList <<" ASTRing \n";
     }
+
     return ret;
 }
 
@@ -64,6 +70,42 @@ ParserEndpoint parseRequest(Request &request, ParserEndpoint notFoundHandler)
     return ret;
 }
 
+void extractQueryParameters(std::string urlLine,std::unordered_map<std::string, std::string>& ret){
+    size_t queryPos = urlLine.find("?");
+    std::string line = urlLine.substr(queryPos+1, urlLine.size()-(queryPos+11));
+    std::cout <<"query Line: "<< line <<"\n";
+    int iter = 0;
+    int status=0;
+    std::string k;
+    std::string v;
+    while(line[iter]!='\0'){
+ 
+       if(line[iter]=='='){
+          iter++;
+          status = 1;
+          continue;
+       }else if(line[iter]=='&'){
+          status = 0;
+          iter++;
+          ret[k] = v;
+          ///std::cout <<"key "<< k <<" : "<<" value "<< v <<"\n";
+          k = "";
+          v = "";
+          continue;
+       }else{
+          if(status==0){
+            k+= line[iter];
+          }else{
+            v+= line[iter];
+          }
+       }
+       iter++;
+    }
+    ret[k] = v;
+   //// std::cout <<"key "<< k <<" : "<<" value "<< v <<"\n";
+}
+
+
 std::unordered_map<std::string, std::string> parseRequest(const std::string &request)
 {
     std::unordered_map<std::string, std::string> requestData;
@@ -73,27 +115,32 @@ std::unordered_map<std::string, std::string> parseRequest(const std::string &req
 
     // Parse the request line
     std::getline(iss, requestLine);
-
+   //// std::cout << requestLine <<"\n request line above \n";
     // Find the position of the first space character
     size_t verbEndPos = requestLine.find(' ');
 
+    size_t queryPos = requestLine.find("?");
+
+    if(queryPos!=std::string::npos){
+        std::cout <<"----------------\n";
+        extractQueryParameters(requestLine,requestData);
+        std::cout <<"----------------\n";
+    }
+
     if (verbEndPos != std::string::npos) {
-        // Extract the verb
+
         std::string verb = requestLine.substr(0, verbEndPos);
 
-        // Find the position of the second space character
         size_t urlEndPos = requestLine.find(' ', verbEndPos + 1);
 
         if (urlEndPos != std::string::npos) {
             // Extract the URL
             std::string url = requestLine.substr(verbEndPos + 1, urlEndPos - verbEndPos - 1);
-
             // Save the verb and URL into the map
             requestData["verb"] = verb;
             requestData["url"] = url;
         }
     }
-
     return requestData;
 }
 
@@ -130,6 +177,8 @@ void handleClient(ClientInfo *client)
     // Receive and process the request
     char buffer[8194] = {0x00};
     int bytesRead = recv(client->sockfd, buffer, sizeof(buffer), 0);
+
+    std::cout <<"=====================================\n";
     if (bytesRead > 0) {
         std::string request(buffer, bytesRead);
 
@@ -143,8 +192,10 @@ void handleClient(ClientInfo *client)
         std::string stream;
 
         std::cout << "Request to Url: " << head["url"] << "\n";
-        //        for(auto it : headers)
-        //		 std::cout << it.first <<": "<< it.second<<"\n";
+        for(auto it : headers)
+           std::cout << it.first <<": "<< it.second<<"\n";
+        for(auto it : head)
+           std::cout << it.first <<": "<< it.second<<"\n";
 
 #ifdef __JUST_TEST
         stream += "Http Verb and URL \n";

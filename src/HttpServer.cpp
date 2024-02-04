@@ -11,6 +11,8 @@ HttpServer HttpServer::registerNewStaticEndpoint(std::string endpoint, ParserEnd
     return (*this);
 }
 
+std::string HttpServer::RootPath = "/etc/www";
+
 HttpServer::HttpServer(int port)
 {
 #ifdef WIN32

@@ -53,7 +53,7 @@ struct ComposeHtmlElement : public HtmlElement{
         StringStream stream;
         stream << "<"<<this->tag_name;
         for(auto it : this->parameter){
-            stream <<"\""<<it.first<<"\"="<<"\""<<it.second<<"\" ";
+            stream <<it.first<<"=\""<<it.second<<"\" ";
         }
         stream.str().pop_back();
         stream <<">";

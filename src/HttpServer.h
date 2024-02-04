@@ -1,5 +1,5 @@
 #pragma once
-
+#undef WIN32
 #include <iostream>
 #include <string>
 #include <unordered_map>
@@ -33,9 +33,12 @@ struct HttpServer
 {
     SOCKET serverSocket;
 
+    static std::string RootPath;
+
+
 public:
     HttpServer registerNewStaticEndpoint(std::string endpoint, ParserEndpoint);
-
     HttpServer(int port);
+
     int start();
 };
