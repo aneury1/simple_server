@@ -1,23 +1,21 @@
 
 #include "htmlbuilder.h"
 #include "HttpServer.h"
+
+#ifdef WIN32
 #pragma comment(lib, "ws2_32.lib")
+#endif 
 
 Response *homeDir(Request *request)
 {
-
     for(auto it : request->parameters){
         std::cout << "Parameter: " << it.first <<" : "<< it.second <<"\n";
     }
-
-
     auto response = new Response();
     response->body = "Simple Text";
-    ///std::cout << response->body;
     response->headers["Content-Type"] = "text/html";
     response->headers["Content-Length"] = std::to_string(response->body.size());
-    response->statusCode = 200;
- 
+    response->statusCode = 200; 
     return response;
 }
 
@@ -49,10 +47,9 @@ Response *anyAssetsWithParams(Request *request)
     response->headers["Content-Type"] = "text/html";
     return response;
 }
-#include <exception>
+
 Response *requestAnyJSFileinRoot(Request *request)
 {
-    ///std::cout << request->url<<"Render File-->" << request->url.substr(1, request->url.size()-1);
     std::string file = request->url.substr(1, request->url.size() - 1);
     auto buffer = readWholeFile(HttpServer::RootPath+"/"+ file);
     auto response = new Response();
@@ -65,7 +62,6 @@ Response *requestAnyJSFileinRoot(Request *request)
 
 Response *requestAnyHTMLFileinRoot(Request *request)
 {
-    ///std::cout << request->url<<"Render File-->" << request->url.substr(1, request->url.size()-1);
     std::string file = request->url.substr(1, request->url.size() - 1);
     auto buffer = readWholeFile(HttpServer::RootPath+"/"+ file);
     auto response = new Response();
@@ -73,12 +69,11 @@ Response *requestAnyHTMLFileinRoot(Request *request)
     response->headers["Content-Type"] = "text/html";
     response->headers["Content-Length"] = std::to_string(buffer.size());
     response->statusCode = 200;
-    return response; ///comment
+    return response;
 }
 
 Response *requestAnyJSONFileinRoot(Request *request)
 {
-    //// std::cout << request->url<<"Render File-->" << request->url.substr(1, request->url.size()-1);
     std::string file = request->url.substr(1, request->url.size() - 1);
     auto buffer = readWholeFile(HttpServer::RootPath+"/"+ file);
     auto response = new Response();
@@ -89,21 +84,32 @@ Response *requestAnyJSONFileinRoot(Request *request)
     return response;
 }
 
-
-
-
-int main()
+Response *apiWareTest(Request *request)
 {
-  
-  /*  ComposeHtmlElement meta("p", "THIS IS LAY off");
-    meta.addParameter("charset", "utf-sdf8");
-    meta.addParameter("provider", "utfs-8");
-    meta.addParameter("token", "utf-d8");
-    meta.addParameter("id", "utf-8x");
-    std::cout << meta.toString();
-    */
+    std::string file = request->url.substr(1, request->url.size() - 1);
+    auto buffer = std::string("PRUEBA");
+    
+    for(auto re : request->parameters){
+        buffer+="\n";
+        buffer+="Key: "+ re.first;
+        buffer+= "Value: "+ re.second;
+        buffer+="\n";
+    }
+    
+    auto response = new Response();
+    response->body = buffer;
+    response->headers["Content-Type"] = "text/javascript; charset=utf-8";
+    response->headers["Content-Length"] = std::to_string(buffer.size());
+    response->statusCode = 200;
+
+    return response;
+}
+
+int main(int argc, char *argv[])
+{
     return HttpServer(9293)
         .registerNewStaticEndpoint("/", homeDir)
+        .registerNewStaticEndpoint("/cliente/:id/:nombre/orden", apiWareTest)
         .registerNewStaticEndpoint("/:id.html", requestAnyHTMLFileinRoot)
         .registerNewStaticEndpoint("/:id.js", requestAnyJSFileinRoot)
         .registerNewStaticEndpoint("/:id.json", requestAnyJSONFileinRoot)
@@ -112,14 +118,3 @@ int main()
         .registerNewStaticEndpoint("/assets/:xparams", anyAssetsWithParams)
         .start();
 }
-
-#if 0
-void test() {
-	/*registered_endpoint["/"] = home;
-	registered_endpoint["/user/:id/:aneury"] = user;
-
-	Request request;
-	request.url = "/user/1/aneury";
-	parseRequest(request, nullptr)(&request);*/
-}
-#endif

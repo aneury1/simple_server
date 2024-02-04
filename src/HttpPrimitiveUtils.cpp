@@ -191,11 +191,12 @@ void handleClient(ClientInfo *client)
 
         std::string stream;
 
-        std::cout << "Request to Url: " << head["url"] << "\n";
+      /*  std::cout << "Request to Url: " << head["url"] << "\n";
         for(auto it : headers)
            std::cout << it.first <<": "<< it.second<<"\n";
         for(auto it : head)
            std::cout << it.first <<": "<< it.second<<"\n";
+           */
 
 #ifdef __JUST_TEST
         stream += "Http Verb and URL \n";
