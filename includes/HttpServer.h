@@ -37,7 +37,11 @@ struct HttpServer
 
 
 public:
+
+    void setRootPath(std::string path);
+  
     HttpServer registerNewStaticEndpoint(std::string endpoint, ParserEndpoint);
+
     HttpServer(int port);
 
     int start();

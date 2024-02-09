@@ -1,8 +1,18 @@
 #include "HttpServer.h"
 #include "HttpPrimitiveUtils.h"
 #include "HttpServerMetada.h"
+
+
+
 namespace {
+
 const int MAX_CONNECTIONS = 1000;
+
+}
+ 
+void HttpServer::setRootPath(std::string path)
+{
+    RootPath = path;
 }
 
 HttpServer HttpServer::registerNewStaticEndpoint(std::string endpoint, ParserEndpoint parsed)

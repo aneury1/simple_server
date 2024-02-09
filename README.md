@@ -14,6 +14,7 @@ in order to build the project I set premake file that would generate the build s
 
 ## TODO 
 There are a lot  of thing to do in this project here are the most need 
+- Simple Routing Mechanisn
 - Build Script Configuration
 - Proxies 
 - Virtual Proxies
@@ -26,3 +27,8 @@ There are a lot  of thing to do in this project here are the most need
 - Connect to Other non http Server(Raw Server, UDP Server)
 - change thread model to NIO/Select/Poll when configure.
 - ...
+
+
+#### Source Documentation
+
+##### Routing Mechanism
