@@ -27,7 +27,13 @@ typedef int SOCKET;
 #endif
 
 ///#include "HttpServer.h"
-
+enum class RequestVerb{
+    Get,Post
+    
+#ifdef API2_0
+    ,Put,Delete,Options
+ #endif
+};
 // Define a structure to store client information
 struct ClientInfo
 {
@@ -37,9 +43,11 @@ struct ClientInfo
 
 struct Request
 {
+    RequestVerb requestVerb;
     std::string url;
     std::unordered_map<std::string, std::string> parameters;
     std::unordered_map<std::string, std::string> urlParams;
+    std::string body;
 };
 struct Response
 {
@@ -47,12 +55,14 @@ struct Response
     std::string body;
     int statusCode;
 
+#ifdef API2_0
     Response createResponseForHtmlContent();
     Response createResponseForJs();
     Response createResponseForJson();
     Response createResponseTextPlain();
-
     std::string getResponse();
+#endif 
+
 
 private:
     std::string raw_response;

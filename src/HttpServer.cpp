@@ -50,7 +50,7 @@ HttpServer::HttpServer(int port)
 
     // Bind the socket to the server address
     if (bind(serverSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
-        std::cerr << "Failed to bind server socket" << std::endl;
+        std::cerr << "Failed to bind server socket: " << std::endl;
     }
 
     // Start listening for incoming connections
@@ -59,7 +59,7 @@ HttpServer::HttpServer(int port)
         return;
     }
 
-    std::cout << "Server v0.1 started. Listening on port" << port << std::endl;
+    std::cout << "Server v0.1 started\nListening on port : 0.0.0.0:" << port <<" "<< std::endl;
 }
 
 int HttpServer::start()

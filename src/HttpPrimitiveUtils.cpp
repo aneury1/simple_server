@@ -7,15 +7,41 @@ std::unordered_map<std::string, std::string> parseUrlParams(std::string url)
 {
     std::unordered_map<std::string, std::string> ret;
     // if (url.find("?") != std::string::npos) {
-    //     std::cout << "WE need to parse this params...\n" << url << "\n";
+   
     // }
     size_t pos = url.find("?");
     if(pos!=std::string::npos){
         std::string paramList = url.substr(pos,url.size()-pos);
-        std::cout << paramList <<" ASTRing \n";
+    
     }
 
     return ret;
+}
+std::string toLowerCaseString(const std::string& str){
+    std::string ret = str;
+    std::transform(ret.begin(), ret.end(), ret.begin(),[](char s){
+          return std::tolower(s);        
+    });
+    return ret;
+}
+
+
+RequestVerb parseRequestVerb(std::string buffer){
+    auto testStr = toLowerCaseString(buffer);
+   /// std::cout << testStr <<"!!!!";
+    if(testStr.find("get")!=std::string::npos)
+        return RequestVerb::Get;
+    else if(testStr.find("post")!=std::string::npos)
+        return RequestVerb::Post;
+    return RequestVerb::Get;
+}
+
+std::string extractBody(const std::string str){
+    int pos =str.find("\r\n\r\n");
+    if(pos < str.size());
+       return " ";
+    std::string body = str.substr(pos+2, str.size()-(pos+2));
+    return body;
 }
 
 ParserEndpoint parseRequest(Request &request, ParserEndpoint notFoundHandler)
@@ -30,6 +56,9 @@ ParserEndpoint parseRequest(Request &request, ParserEndpoint notFoundHandler)
 
     for (const auto &endpoint : registered_endpoint) {
         std::string pattern = endpoint.first;
+
+        std::cout << endpoint.first <<"\n";
+
         std::regex regexPattern(std::regex_replace(pattern, std::regex(":\\w+"), "(\\w+)"));
         std::smatch matches;
         if (std::regex_match(url, matches, regexPattern)) {
@@ -42,7 +71,7 @@ ParserEndpoint parseRequest(Request &request, ParserEndpoint notFoundHandler)
             for (std::size_t i = 1; i < matches.size(); ++i) {
                 std::string paramName = paramIterator->str().substr(1); // Remove the leading ":"
                 std::string paramValue = matches[i].str();
-                std::cout << "name " << paramName << " Value: " << paramValue << "\n\n";
+ 
                 parameters[paramName] = paramValue; // Store the parameter name-value pair in the map
 
                 ++paramIterator;
@@ -53,9 +82,10 @@ ParserEndpoint parseRequest(Request &request, ParserEndpoint notFoundHandler)
     }
     if (!found) {
         if (!notFoundHandler) {
+            std::cout << request.url <<"  WOULD BE NOT FOUND?????\n";
             notFoundHandler = [](Request *) -> Response * {
                 auto response = new Response();
-                response->body = "<b>EMPTY REQUEST</b>";
+                response->body = "<b>EMPTY REQUEST [\"  \"]</b>";
                 response->headers["Content-Type"] = "text/html";
                 return response;
             };
@@ -63,17 +93,15 @@ ParserEndpoint parseRequest(Request &request, ParserEndpoint notFoundHandler)
 
         ret = notFoundHandler;
     }
-
     // Store the parameters in the Request object
     request.parameters = parameters;
-
     return ret;
 }
 
 void extractQueryParameters(std::string urlLine,std::unordered_map<std::string, std::string>& ret){
     size_t queryPos = urlLine.find("?");
     std::string line = urlLine.substr(queryPos+1, urlLine.size()-(queryPos+11));
-    std::cout <<"query Line: "<< line <<"\n";
+ 
     int iter = 0;
     int status=0;
     std::string k;
@@ -88,7 +116,7 @@ void extractQueryParameters(std::string urlLine,std::unordered_map<std::string, 
           status = 0;
           iter++;
           ret[k] = v;
-          ///std::cout <<"key "<< k <<" : "<<" value "<< v <<"\n";
+           
           k = "";
           v = "";
           continue;
@@ -102,7 +130,7 @@ void extractQueryParameters(std::string urlLine,std::unordered_map<std::string, 
        iter++;
     }
     ret[k] = v;
-   //// std::cout <<"key "<< k <<" : "<<" value "<< v <<"\n";
+   
 }
 
 
@@ -115,16 +143,16 @@ std::unordered_map<std::string, std::string> parseRequest(const std::string &req
 
     // Parse the request line
     std::getline(iss, requestLine);
-   //// std::cout << requestLine <<"\n request line above \n";
+ 
     // Find the position of the first space character
     size_t verbEndPos = requestLine.find(' ');
 
     size_t queryPos = requestLine.find("?");
 
     if(queryPos!=std::string::npos){
-        std::cout <<"----------------\n";
+       
         extractQueryParameters(requestLine,requestData);
-        std::cout <<"----------------\n";
+         
     }
 
     if (verbEndPos != std::string::npos) {
@@ -178,7 +206,6 @@ void handleClient(ClientInfo *client)
     char buffer[8194] = {0x00};
     int bytesRead = recv(client->sockfd, buffer, sizeof(buffer), 0);
 
-    std::cout <<"=====================================\n";
     if (bytesRead > 0) {
         std::string request(buffer, bytesRead);
 
@@ -187,16 +214,14 @@ void handleClient(ClientInfo *client)
         Request thisRequest;
         thisRequest.url = head["url"];
         thisRequest.parameters = headers;
+        thisRequest.requestVerb = parseRequestVerb(buffer);
+        thisRequest.body = extractBody(buffer);
+
         auto res = parseRequest(thisRequest, nullptr);
 
         std::string stream;
 
-      /*  std::cout << "Request to Url: " << head["url"] << "\n";
-        for(auto it : headers)
-           std::cout << it.first <<": "<< it.second<<"\n";
-        for(auto it : head)
-           std::cout << it.first <<": "<< it.second<<"\n";
-           */
+ 
 
 #ifdef __JUST_TEST
         stream += "Http Verb and URL \n";
@@ -226,10 +251,66 @@ void handleClient(ClientInfo *client)
         // Send the response back to the client
         int querysend = send(client->sockfd, response.c_str(), response.length(), 0);
 
-        //std::cout <<"Send: "<< querysend <<"\n" << ;
+        
     }
 
     // Close the client connection
     closesocket(client->sockfd);
     delete client;
+}
+
+
+#include <sstream>
+#include <map>
+#include <string>
+
+ 
+
+
+std::string fetchJsBuilder(
+    std::string url, 
+    std::string body, 
+    std::map<std::string,std::string>fetchOptions,
+    std::map<std::string,std::string>httpHeaders
+    ){
+
+
+   std::stringstream fetchOptsStream;
+  
+   fetchOptsStream << "async function postData(url = \"\", data = {}) {\r\n";
+   fetchOptsStream << "const response = await fetch(\"" <<url <<"\",{\r\n";
+   for(auto it : fetchOptions){
+      fetchOptsStream << it.first <<": \""<<it.second<<"\",\r\n\t";
+   } 
+
+
+   if(httpHeaders.size()>0){
+      fetchOptsStream <<"headers: {";
+         for(auto it : httpHeaders)
+             fetchOptsStream <<"\""<<it.first<<"\":"<<"\""<<it.first<<"\",\r\n\t";
+         fetchOptsStream <<"masterc:1\r\n}";
+   }
+   if(body.size()>0){
+       fetchOptsStream << "\r\n,body: "<<"JSON.stringify("<<"{}"<<")});";
+   }else{
+       fetchOptsStream << ",});\r\n";
+   }
+  fetchOptsStream << "\r\nreturn response.json(); \r\n}\r\n";
+  return fetchOptsStream.str();
+#if 0
+ const response = await fetch(url, {
+    method: "POST", // *GET, POST, PUT, DELETE, etc.
+    mode: "cors", // no-cors, *cors, same-origin
+    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: "same-origin", // include, *same-origin, omit
+    headers: {
+      "Content-Type": "application/json",
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    redirect: "follow", // manual, *follow, error
+    referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    body: JSON.stringify(data), // body data type must match "Content-Type" header
+  });
+  return response.json(); // parses JSON response into native JavaScript objects
+#endif
 }

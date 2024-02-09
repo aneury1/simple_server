@@ -29,6 +29,8 @@
 #include "HttpServerMetada.h"
 #include "IOUtils.h"
 
+
+
 struct HttpServer
 {
     SOCKET serverSocket;
@@ -41,6 +43,8 @@ public:
     void setRootPath(std::string path);
   
     HttpServer registerNewStaticEndpoint(std::string endpoint, ParserEndpoint);
+
+    HttpServer Post(std::string endpoint, ParserEndpoint);
 
     HttpServer(int port);
 
