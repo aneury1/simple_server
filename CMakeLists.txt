@@ -10,15 +10,11 @@ add_library(AHttpServer ${SRCS})
 
 install(TARGETS AHttpServer DESTINATION lib)
 
-#  install(TARGETS AHttpServer
-#         ARCHIVE DESTINATION lib 
-#         LIBRARY DESTINATION lib   
-#         RUNTIME DESTINATION bin   
-# )
 
-# install(FILE libAhttpServer /home/aneury/Desktop)
+include(CTest)
+add_subdirectory(external)
+add_subdirectory(tests)
 
-# add_executable(${PROJECT_NAME} ${SRCS})
 
 # include(FetchContent)
 # FetchContent_Declare(
@@ -41,7 +37,7 @@ install(TARGETS AHttpServer DESTINATION lib)
 #   GTest::gtest_main
 # )
 
-# # include(GoogleTest)
-# # gtest_discover_tests(hello_test)
+# include(GoogleTest)
+# gtest_discover_tests(hello_test)
 
 

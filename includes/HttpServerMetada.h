@@ -71,3 +71,4 @@ private:
 typedef Response *(*ParserEndpoint)(Request *request);
 
 extern std::map<std::string, ParserEndpoint> registered_endpoint;
+extern std::map<std::string, ParserEndpoint> registered_post_endpoint;

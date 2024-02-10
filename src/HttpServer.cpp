@@ -9,19 +9,21 @@ namespace {
 const int MAX_CONNECTIONS = 1000;
 
 }
- 
+
+std::string HttpServer::RootPath = "/etc/www";
+
 void HttpServer::setRootPath(std::string path)
 {
     RootPath = path;
 }
 
-HttpServer HttpServer::registerNewStaticEndpoint(std::string endpoint, ParserEndpoint parsed)
+HttpServer HttpServer::endpoint(std::string endpoint, ParserEndpoint parsed)
 {
     registered_endpoint[endpoint] = parsed;
     return (*this);
 }
 
-std::string HttpServer::RootPath = "/etc/www";
+
 
 HttpServer::HttpServer(int port)
 {

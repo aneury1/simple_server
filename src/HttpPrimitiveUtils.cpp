@@ -1,7 +1,8 @@
 #include "HttpPrimitiveUtils.h"
 #include "IOUtils.h"
 
-#define TEST_STATIC_FILE "C:\\Users\\aneur\\Desktop\\AHTTPSERVER\\tests\\render_test\\index.html"
+#define TEST_STATIC_FILE "index.html"
+
 
 std::unordered_map<std::string, std::string> parseUrlParams(std::string url)
 {
@@ -12,41 +13,13 @@ std::unordered_map<std::string, std::string> parseUrlParams(std::string url)
     size_t pos = url.find("?");
     if(pos!=std::string::npos){
         std::string paramList = url.substr(pos,url.size()-pos);
-    
     }
-
     return ret;
 }
-std::string toLowerCaseString(const std::string& str){
-    std::string ret = str;
-    std::transform(ret.begin(), ret.end(), ret.begin(),[](char s){
-          return std::tolower(s);        
-    });
-    return ret;
-}
+ 
 
-
-RequestVerb parseRequestVerb(std::string buffer){
-    auto testStr = toLowerCaseString(buffer);
-   /// std::cout << testStr <<"!!!!";
-    if(testStr.find("get")!=std::string::npos)
-        return RequestVerb::Get;
-    else if(testStr.find("post")!=std::string::npos)
-        return RequestVerb::Post;
-    return RequestVerb::Get;
-}
-
-std::string extractBody(const std::string str){
-    int pos =str.find("\r\n\r\n");
-    if(pos < str.size());
-       return " ";
-    std::string body = str.substr(pos+2, str.size()-(pos+2));
-    return body;
-}
-
-ParserEndpoint parseRequest(Request &request, ParserEndpoint notFoundHandler)
-{
-    ParserEndpoint ret = nullptr;
+ ParserEndpoint parseDinamicRequest(Request &request, ParserEndpoint notFoundHandler){
+ ParserEndpoint ret = nullptr;
     std::string url = request.url;
     bool found = false;
     std::unordered_map<std::string, std::string>
@@ -85,8 +58,8 @@ ParserEndpoint parseRequest(Request &request, ParserEndpoint notFoundHandler)
             std::cout << request.url <<"  WOULD BE NOT FOUND?????\n";
             notFoundHandler = [](Request *) -> Response * {
                 auto response = new Response();
-                response->body = "<b>EMPTY REQUEST [\"  \"]</b>";
-                response->headers["Content-Type"] = "text/html";
+                response->body = "EMPTY REQUEST [\"  \"]";
+                response->headers["Content-Type"] = "text/plain";
                 return response;
             };
         }
@@ -96,6 +69,37 @@ ParserEndpoint parseRequest(Request &request, ParserEndpoint notFoundHandler)
     // Store the parameters in the Request object
     request.parameters = parameters;
     return ret;
+}
+ 
+std::string toLowerCaseString(const std::string& str){
+    std::string ret = str;
+    std::transform(ret.begin(), ret.end(), ret.begin(),[](char s){
+          return std::tolower(s);        
+    });
+    return ret;
+}
+
+RequestVerb parseRequestVerb(std::string buffer){
+    auto testStr = toLowerCaseString(buffer);
+   /// std::cout << testStr <<"!!!!";
+    if(testStr.find("get")!=std::string::npos)
+        return RequestVerb::Get;
+    else if(testStr.find("post")!=std::string::npos)
+        return RequestVerb::Post;
+    return RequestVerb::Get;
+}
+
+std::string extractBody(const std::string str){
+    int pos =str.find("\r\n\r\n");
+    if(pos < str.size());
+       return " ";
+    std::string body = str.substr(pos+2, str.size()-(pos+2));
+    return body;
+}
+
+ParserEndpoint parseRequest(Request &request, ParserEndpoint notFoundHandler)
+{
+    return parseDinamicRequest(request, notFoundHandler);
 }
 
 void extractQueryParameters(std::string urlLine,std::unordered_map<std::string, std::string>& ret){
