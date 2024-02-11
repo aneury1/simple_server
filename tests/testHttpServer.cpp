@@ -58,15 +58,13 @@ TEST(ValidateRoutePattern, ValidateRoute){
 
 
 TEST(ValidateRoutePattern, ValidateValidRoute){
-
-
+  
   const std::map<std::string, ParserEndpoint> routeList={
     {"/post/<post_id:int>/ha", DefaultEndpoint},
     {"/post/<post_id:int>/hola", DefaultEndpoint},
     {"/post/<post_id:int>/", DefaultEndpointW200},
     {"/post/<post_id:int>/h", DefaultEndpoint},
     {"/post/<post_id:int>/hla", DefaultEndpoint},
- 
   };
   const std::string uriRequested = "/post/1";
 
