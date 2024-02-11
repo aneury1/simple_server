@@ -1,29 +1,80 @@
 // Must include the gtest header to use the testing library
 #include <gtest/gtest.h>
-
-namespace {
-  // We will test this dummy function but you can test
-  // any function from any library that you write too.
-  int GetMeaningOfLife() {  return 42; }
+#include "HttpServer.h"
+#include <map>
+/*
+TEST(PathHandler, SetAndGetCorrectPath){
+   HttpServer server(9000);
+   server.setRootPath("/www/home");
+   EXPECT_EQ(server.getRootPath(), "/www/home");
 }
 
-// All tests must live within TEST* blocks
-// Inside of the TEST block is a standard C++ scope
-// TestTopic defines a topic of our test, e.g. NameOfFunctionTest
-// TrivialEquality represents the name of this particular test
-// It should be descriptive and readable to the user
-// TEST is a macro, i.e., preprocessor replaces it with some code
-TEST(TestTopic2, TrivialEquality) {
-  // We can test for equality, inequality etc.
-  // If the equality does not hold, the test fails.
-  // EXPECT_* are macros, i.e., also replaced by the preprocessor.
-  EXPECT_EQ(GetMeaningOfLife(), 42);
+TEST(PathHandler, SetAndGetInvalidPath){
+   HttpServer server(9000);
+   server.setRootPath("/www/home");
+   EXPECT_NE(server.getRootPath(), "/www/home1");
+}
+*/
+TEST(ParseCorrectRoutes, SplitSize2){
+ 
+
+  const std::string route_to_parse = "/post/<int:post_id>";
+  
+  auto splitWords = [](std::string word, char sp){
+     std::vector<std::string> ret;
+     int iter=0;
+     std::string str;
+     while(word[iter]!='\0'){
+        
+        if(word[iter]!=sp){
+          str+= word[iter];
+        }
+        else{
+            if(str.size()>0)
+              ret.push_back(str);
+            str="";
+        }
+        iter++;
+     }
+     if(str.size()>0)
+       ret.push_back(str);
+     return ret;
+  };
+   std::string routeToTest("/post/<int:post_id>");
+   auto vec = splitWords(routeToTest, '/'); 
+   EXPECT_EQ(vec.size(), 2);
 }
 
-TEST(TestTopic2, MoreEqualityTests) {
-  // ASSERT_* is similar to EXPECT_* but stops the execution
-  // of the test if fails.
-  // EXPECT_* continues execution on failure too.
-  ASSERT_EQ(GetMeaningOfLife(), 42) << "Oh no, a mistake!";
-  EXPECT_FLOAT_EQ(23.23F, 23.23F);
+
+TEST(ValidateRoutePattern, ValidateRoute){
+  const std::string route_to_parse = "/post/<post_id:int>";
+  const std::string uri_to_parse = "/post/1";
+  std::cout <<"\n\n\n";  
+  auto vecPattern = splitWords(route_to_parse, '/');
+  auto vecUriToTest = splitWords(uri_to_parse, '/');
+  EXPECT_EQ(vecPattern.size(), vecUriToTest.size());
+  EXPECT_EQ(validatePatterByUrl(vecUriToTest, vecPattern), true);
+}
+
+
+TEST(ValidateRoutePattern, ValidateValidRoute){
+
+
+  const std::map<std::string, ParserEndpoint> routeList={
+    {"/post/<post_id:int>/ha", DefaultEndpoint},
+    {"/post/<post_id:int>/hola", DefaultEndpoint},
+    {"/post/<post_id:int>/", DefaultEndpointW200},
+    {"/post/<post_id:int>/h", DefaultEndpoint},
+    {"/post/<post_id:int>/hla", DefaultEndpoint},
+ 
+  };
+  const std::string uriRequested = "/post/1";
+
+   auto it = getEndpointFromMap(uriRequested,routeList);
+   
+   EXPECT_EQ(it.first, "/post/<post_id:int>/");
+
+   auto response = it.second(nullptr);
+
+   EXPECT_EQ(response->statusCode, 200);
 }

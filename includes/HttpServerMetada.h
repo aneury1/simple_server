@@ -26,6 +26,14 @@
 typedef int SOCKET;
 #endif
 
+
+enum class UrlDatatype{
+    Integer,
+    Str,
+    Boolean,
+    InvalidUrlDatatype
+};
+
 ///#include "HttpServer.h"
 enum class RequestVerb{
     Get,Post

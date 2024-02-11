@@ -30,6 +30,15 @@
 #include "IOUtils.h"
 
 
+Response *DefaultEndpoint(Request *request);
+Response *DefaultEndpointW200(Request *request);
+
+std::pair<std::string, ParserEndpoint> getEndpointFromMap(const std::string uri,const std::map<std::string, ParserEndpoint>& enpointList);
+UrlDatatype getNodeDataTypeByPattern(const std::string& routeNode);
+const std::string UrlDatatypeAsStr(const UrlDatatype& type);
+UrlDatatype getDataTypeByValue(std::string value);
+std::vector<std::string> splitWords(std::string word, char sp);
+bool validatePatterByUrl(std::vector<std::string> uri, std::vector<std::string> pattern);
 
 struct HttpServer
 {
@@ -39,11 +48,15 @@ struct HttpServer
 
 public:
 
-    void setRootPath(std::string path);
-  
-    HttpServer endpoint(std::string endpoint, ParserEndpoint);
+    void setRootPath(const std::string& path);
 
-    HttpServer(int port);
+    const std::string getRootPath() const;
+  
+    HttpServer endpoint(const std::string& endpoint,const ParserEndpoint& endp);
+
+    bool validateEnpointRoute(const std::string& path);
+
+    HttpServer(const int port);
 
     int start();
 };

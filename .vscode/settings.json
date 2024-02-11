@@ -54,6 +54,22 @@
         "streambuf": "cpp",
         "thread": "cpp",
         "typeinfo": "cpp",
-        "optional": "cpp"
+        "optional": "cpp",
+        "cstring": "cpp",
+        "any": "cpp",
+        "charconv": "cpp",
+        "chrono": "cpp",
+        "condition_variable": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "set": "cpp",
+        "unordered_set": "cpp",
+        "source_location": "cpp",
+        "format": "cpp",
+        "iomanip": "cpp",
+        "mutex": "cpp",
+        "span": "cpp",
+        "cinttypes": "cpp",
+        "variant": "cpp"
     }
 }
