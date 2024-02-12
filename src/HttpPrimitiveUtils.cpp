@@ -3,74 +3,9 @@
 
 #define TEST_STATIC_FILE "index.html"
 
-
-std::unordered_map<std::string, std::string> parseUrlParams(std::string url)
-{
-    std::unordered_map<std::string, std::string> ret;
-    // if (url.find("?") != std::string::npos) {
-   
-    // }
-    size_t pos = url.find("?");
-    if(pos!=std::string::npos){
-        std::string paramList = url.substr(pos,url.size()-pos);
-    }
-    return ret;
-}
- 
-
- ParserEndpoint parseDinamicRequest(Request &request, ParserEndpoint notFoundHandler){
- ParserEndpoint ret = nullptr;
-    std::string url = request.url;
-    bool found = false;
-    std::unordered_map<std::string, std::string>
-        parameters; // Create an empty map to store the parameters
-
-    request.urlParams = parseUrlParams(request.url);
-
-    for (const auto &endpoint : registered_endpoint) {
-        std::string pattern = endpoint.first;
-
-        std::cout << endpoint.first <<"\n";
-
-        std::regex regexPattern(std::regex_replace(pattern, std::regex(":\\w+"), "(\\w+)"));
-        std::smatch matches;
-        if (std::regex_match(url, matches, regexPattern)) {
-            ret = endpoint.second;
-            found = true;
-
-            std::regex paramRegex(":\\w+");
-            std::sregex_iterator paramIterator(pattern.begin(), pattern.end(), paramRegex);
-
-            for (std::size_t i = 1; i < matches.size(); ++i) {
-                std::string paramName = paramIterator->str().substr(1); // Remove the leading ":"
-                std::string paramValue = matches[i].str();
- 
-                parameters[paramName] = paramValue; // Store the parameter name-value pair in the map
-
-                ++paramIterator;
-            }
-
-            break;
-        }
-    }
-    if (!found) {
-        if (!notFoundHandler) {
-            std::cout << request.url <<"  WOULD BE NOT FOUND?????\n";
-            notFoundHandler = [](Request *) -> Response * {
-                auto response = new Response();
-                response->body = "EMPTY REQUEST [\"  \"]";
-                response->headers["Content-Type"] = "text/plain";
-                return response;
-            };
-        }
-
-        ret = notFoundHandler;
-    }
-    // Store the parameters in the Request object
-    request.parameters = parameters;
-    return ret;
-}
- 
+/**
+ * this function will convert string to lower case.
+*/
 std::string toLowerCaseString(const std::string& str){
     std::string ret = str;
     std::transform(ret.begin(), ret.end(), ret.begin(),[](char s){
@@ -79,6 +14,9 @@ std::string toLowerCaseString(const std::string& str){
     return ret;
 }
 
+/// @brief Parse the buffer to Http Verb enum
+/// @param buffer 
+/// @return RequestVerb
 RequestVerb parseRequestVerb(std::string buffer){
     auto testStr = toLowerCaseString(buffer);
    /// std::cout << testStr <<"!!!!";
@@ -89,6 +27,73 @@ RequestVerb parseRequestVerb(std::string buffer){
     return RequestVerb::Get;
 }
 
+std::string RequestVerbToString(RequestVerb httpVerb){
+    switch(httpVerb){
+        case RequestVerb::Get:
+            return "GET";
+        case RequestVerb::Post:
+            return "POST";
+        default:
+            return "UNDEFINED";
+    }
+}
+
+
+/// @brief this function help to parse url params like /host?id=1;name=aneury 
+///        this would convert to map: map[id]=1, map[name]=aneury
+/// @return unordered_map<string,string> 
+std::unordered_map<std::string, std::string> parseUrlParams(std::string url)
+{
+    std::unordered_map<std::string, std::string> ret;
+    size_t pos = url.find("?");
+    if(pos!=std::string::npos){
+        std::string paramList = url.substr(pos+1,url.size()-pos);
+        auto vars = splitWords(paramList, ';');
+        for(auto var : vars){
+            auto keyPairs = splitWords(var,'=');
+            ret[keyPairs[0]] = keyPairs[1];
+        }
+    }
+    return ret;
+}
+
+/// @brief extract Get, Post Delete Request
+/// @param request 
+/// @return 
+std::string extractHttpVerb(const std::string request){
+   std::string ret = request.substr(0, request.find_first_of(" "));
+   return ret;
+}
+
+/// @brief Extract current Url
+/// @param request 
+/// @return 
+std::string extractUrlWithQueryParams(std::string request){
+   int firstSpace = request.find_first_of(" ");
+   int findHttpVersion = request.find(" HTTP/1.1");
+   ///std::cout << firstSpace << " -> " << findHttpVersion <<"\n\n\n "<<request;
+   std::string url = request.substr(firstSpace+1, findHttpVersion-(firstSpace+1));
+   //// std::cout <<" URL "<< url;
+   return url;
+}
+
+/// @brief Extract current Url
+/// @param request 
+/// @return 
+std::string extractUrl(std::string request){
+   int firstSpace = request.find_first_of(" ");
+   int findHttpVersion = request.find(" HTTP/1.1");
+   std::string url = request.substr(firstSpace+1, findHttpVersion-(firstSpace+1));
+   if(url.find_first_of('?')!=std::string::npos){
+      return url.substr(0, url.find_first_of("?"));
+   }
+   return url;
+}
+
+
+/// @brief  Extract Content Body...
+/// @param str 
+/// @return 
 std::string extractBody(const std::string str){
     int pos =str.find("\r\n\r\n");
     if(pos < str.size());
@@ -96,97 +101,18 @@ std::string extractBody(const std::string str){
     std::string body = str.substr(pos+2, str.size()-(pos+2));
     return body;
 }
-
-ParserEndpoint parseRequest(Request &request, ParserEndpoint notFoundHandler)
-{
-    return parseDinamicRequest(request, notFoundHandler);
-}
-
-void extractQueryParameters(std::string urlLine,std::unordered_map<std::string, std::string>& ret){
-    size_t queryPos = urlLine.find("?");
-    std::string line = urlLine.substr(queryPos+1, urlLine.size()-(queryPos+11));
- 
-    int iter = 0;
-    int status=0;
-    std::string k;
-    std::string v;
-    while(line[iter]!='\0'){
- 
-       if(line[iter]=='='){
-          iter++;
-          status = 1;
-          continue;
-       }else if(line[iter]=='&'){
-          status = 0;
-          iter++;
-          ret[k] = v;
-           
-          k = "";
-          v = "";
-          continue;
-       }else{
-          if(status==0){
-            k+= line[iter];
-          }else{
-            v+= line[iter];
-          }
-       }
-       iter++;
-    }
-    ret[k] = v;
-   
-}
-
-
-std::unordered_map<std::string, std::string> parseRequest(const std::string &request)
-{
-    std::unordered_map<std::string, std::string> requestData;
-
-    std::istringstream iss(request);
-    std::string requestLine;
-
-    // Parse the request line
-    std::getline(iss, requestLine);
- 
-    // Find the position of the first space character
-    size_t verbEndPos = requestLine.find(' ');
-
-    size_t queryPos = requestLine.find("?");
-
-    if(queryPos!=std::string::npos){
-       
-        extractQueryParameters(requestLine,requestData);
-         
-    }
-
-    if (verbEndPos != std::string::npos) {
-
-        std::string verb = requestLine.substr(0, verbEndPos);
-
-        size_t urlEndPos = requestLine.find(' ', verbEndPos + 1);
-
-        if (urlEndPos != std::string::npos) {
-            // Extract the URL
-            std::string url = requestLine.substr(verbEndPos + 1, urlEndPos - verbEndPos - 1);
-            // Save the verb and URL into the map
-            requestData["verb"] = verb;
-            requestData["url"] = url;
-        }
-    }
-    return requestData;
-}
-
+/// @brief Parse Http Header..
+/// @param request 
+/// @return 
 std::unordered_map<std::string, std::string> parseHeaders(const std::string &request)
 {
     std::unordered_map<std::string, std::string> headers;
 
     std::istringstream iss(request);
     std::string line;
-
     // Skip the first line (request line)
     std::getline(iss, line);
 
-    // Parse headers
     while (std::getline(iss, line) && !line.empty()) {
         size_t colonPos = line.find(':');
         if (colonPos != std::string::npos) {
@@ -196,16 +122,27 @@ std::unordered_map<std::string, std::string> parseHeaders(const std::string &req
             // Remove any leading or trailing whitespaces from the header value
             headerValue.erase(0, headerValue.find_first_not_of(" \t"));
             headerValue.erase(headerValue.find_last_not_of(" \t") + 1);
-
+            headerValue.erase(0, headerValue.find_first_not_of("\r"));
+            headerValue.erase(0, headerValue.find_first_not_of("\n"));
+            headerValue.erase(headerValue.find_last_not_of("\r\n") + 1);
             headers[headerName] = headerValue;
         }
     }
 
     return headers;
 }
+
+
+ParserEndpoint parseRequest(Request &request, ParserEndpoint notFoundHandler)
+{
+   return nullptr;
+}
+
 // Function to handle an individual client connection
 void handleClient(ClientInfo *client)
 {
+
+#if 0  
     // Receive and process the request
     char buffer[8194] = {0x00};
     int bytesRead = recv(client->sockfd, buffer, sizeof(buffer), 0);
@@ -225,22 +162,6 @@ void handleClient(ClientInfo *client)
 
         std::string stream;
 
- 
-
-#ifdef __JUST_TEST
-        stream += "Http Verb and URL \n";
-        stream += head["verb"] + " \n";
-        stream += head["url"] + " \n\n";
-        stream += "Http Headers";
-        for (const auto &header : headers) {
-            stream += header.first + ": " + header.second + "\n";
-        }
-#else
-        //    if(res)
-        //	  stream +=
-        //    else
-        //	  stream += readWholeFile(TEST_STATIC_FILE);
-#endif
 
         auto workedResponse = res(&thisRequest);
 
@@ -254,13 +175,12 @@ void handleClient(ClientInfo *client)
 
         // Send the response back to the client
         int querysend = send(client->sockfd, response.c_str(), response.length(), 0);
-
-        
     }
 
     // Close the client connection
     closesocket(client->sockfd);
     delete client;
+#endif
 }
 
 
@@ -448,3 +368,24 @@ std::pair<std::string, ParserEndpoint> getEndpointFromMap(const std::string uri,
     return res;
 }
 
+std::string generateStrRequestPaylod(const std::string& path,const RequestVerb& verb) {
+#ifdef VERSION_2_0
+   // std::string secWebSocketKey = generateRandomString(16);
+   // std::string secWebSocketAccept = generateSHA1Hash(secWebSocketKey + "258EAFA5-E914-47BE-9B52-6C18FB827A3A"); // Magic string
+#endif
+    const std::string hostname ="localhost";
+    const std::string port = "9090"; 
+    std::string request = RequestVerbToString(verb) +" " + path + " HTTP/1.1\r\n";
+    request += "Upgrade: websocket\r\n";
+    request += "Connection: Upgrade\r\n";
+    request += "Host: " + hostname + ":" + port + "\r\n";
+    request += "supper-long-lasting-information-parameter: 258EAFA5-E914-47BE-9B52-6C18FB827A3A\r\n";
+#ifdef VERSION_2_0
+    request += "Sec-WebSocket-Key: " + secWebSocketKey + "\r\n";
+    request += "Sec-WebSocket-Accept: " + secWebSocketAccept + "\r\n";
+#endif
+    // Add other optional headers if needed
+
+    request += "\r\n";
+    return request;
+}

@@ -19,3 +19,16 @@ const std::string UrlDatatypeAsStr(const UrlDatatype& type);
 UrlDatatype getDataTypeByValue(std::string value);
 std::vector<std::string> splitWords(std::string word, char sp);
 bool validatePatterByUrl(std::vector<std::string> uri, std::vector<std::string> pattern);
+std::unordered_map<std::string, std::string> parseUrlParams(std::string url);
+
+
+
+std::string generateStrRequestPaylod(const std::string& path, const RequestVerb& verb); 
+std::string extractHttpVerb(const std::string request);
+std::string extractUrlWithQueryParams(std::string request);
+std::string extractUrl(std::string request);
+
+
+
+
+std::string RequestVerbToString(RequestVerb httpVerb);
