@@ -424,6 +424,16 @@ std::pair<std::string, ParserEndpoint> getEndpointFromMap(const std::string uri,
 
     std::pair<std::string, ParserEndpoint> res;
     res.first ="not_valid";
+   
+    if(uri.size()==1&&uri=="/"){
+        std::string i = uri.c_str();
+        for(auto it : enpointList){
+            if(it.first == "/")
+               return it;
+        }
+        return res;
+    }
+   
     auto splittedUri = splitWords(uri, '/');
     for(auto it : enpointList){
          auto eSplitted = splitWords(it.first, '/');
