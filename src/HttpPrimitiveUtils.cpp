@@ -142,6 +142,66 @@ ParserEndpoint parseRequest(Request &request, ParserEndpoint notFoundHandler)
 void handleClient(ClientInfo *client)
 {
 
+
+    char buffer[8194] = {0x00};
+    int bytesRead = recv(client->sockfd, buffer, sizeof(buffer), 0);
+
+    if (bytesRead > 0) {
+        std::string request(buffer, bytesRead);
+    
+      std::string httpVerb            = extractHttpVerb(request);
+      std::string urlDynamicPath      = extractUrlWithQueryParams(request);
+      std::string url                 = extractUrl(request);
+      auto headers                    = parseHeaders(request);
+      std::unordered_map<std::string, std::string> params = parseUrlParams(urlDynamicPath);
+     
+     
+      auto it = getEndpointFromMap(url,registered_endpoint);
+
+      std::string response;
+
+      if(it.first == "not_valid"){
+            std::stringstream body;
+
+            body << "HTTP VERB: "<< httpVerb <<"\n"
+                << "URL: " << url <<"\n"
+                << "Dynamic Url: "<< urlDynamicPath <<"\n"
+                << "HTTP Headers: ";
+            for(auto header : headers){
+                body << header.first <<": "<<header.second <<"\n";
+            }
+            if(params.size()>0){
+                body <<"Query Parameters: \n";
+                for(auto param : params ){
+                    body << param.first <<" : "<< param.second<<"\n";
+                }
+            }
+                response = "HTTP/1.1 200 OK\r\n";
+                response += ("Content-Length: ") + std::to_string(body.str().size()) + "\r\n";
+                response += "Content-Type: text/plain\r\n";
+                response += "\r\n\r\n";
+                response += body.str();
+      }else{
+
+         Request request;
+         request.body = "";
+         request.headers = headers;
+         request.url = url;
+         request.urlParams = params;
+         auto res = it.second(&request);
+               
+         response = "HTTP/1.1 200 OK\r\n";
+         response += ("Content-Length: ") + std::to_string((*res).body.size()) + "\r\n";
+         response += "Content-Type: text/plain\r\n";
+         response += "\r\n\r\n";
+         response += (*res).body.c_str();
+         
+      }
+
+      int querysend = send(client->sockfd, response.c_str(), response.length(), 0);
+    }
+
+
 #if 0  
     // Receive and process the request
     char buffer[8194] = {0x00};
@@ -313,9 +373,17 @@ std::vector<std::string> splitWords(std::string word, char sp){
           str+= word[iter];
         }
         else{
-            if(str.size()>0)
+
+            if(str.size()>0){
+              if(word[iter]==sp){
               ret.push_back(str);
-            str="";
+              str="";
+              }else if(word[iter+1]==sp){
+                str+= word[iter];
+                ret.push_back(str);
+                str="";
+              }
+            }
         }
         iter++;
      }

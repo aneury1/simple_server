@@ -53,7 +53,7 @@ struct Request
 {
     RequestVerb requestVerb;
     std::string url;
-    std::unordered_map<std::string, std::string> parameters;
+    std::unordered_map<std::string, std::string> headers;
     std::unordered_map<std::string, std::string> urlParams;
     std::string body;
 };
