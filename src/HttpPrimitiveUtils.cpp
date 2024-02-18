@@ -1,7 +1,22 @@
 #include "HttpPrimitiveUtils.h"
 #include "IOUtils.h"
+#include <sstream>
 
 #define TEST_STATIC_FILE "index.html"
+#define DEFAULT_FAV_ICON_PATH  "/home/aneury/Downloads/favicon.ico" ///TODO fix as required
+
+
+
+Response *getFavIcon(Request *request){
+   Response *resp = new Response();
+   resp->body = readWholeFile(DEFAULT_FAV_ICON_PATH);
+   resp->headers["image/x-icon"];
+   resp->headers["Content-Length"] = std::to_string(resp->body.size());
+   return resp;
+}
+
+
+
 
 /**
  * this function will convert string to lower case.
@@ -14,12 +29,8 @@ std::string toLowerCaseString(const std::string& str){
     return ret;
 }
 
-/// @brief Parse the buffer to Http Verb enum
-/// @param buffer 
-/// @return RequestVerb
 RequestVerb parseRequestVerb(std::string buffer){
     auto testStr = toLowerCaseString(buffer);
-   /// std::cout << testStr <<"!!!!";
     if(testStr.find("get")!=std::string::npos)
         return RequestVerb::Get;
     else if(testStr.find("post")!=std::string::npos)
@@ -71,9 +82,7 @@ std::string extractHttpVerb(const std::string request){
 std::string extractUrlWithQueryParams(std::string request){
    int firstSpace = request.find_first_of(" ");
    int findHttpVersion = request.find(" HTTP/1.1");
-   ///std::cout << firstSpace << " -> " << findHttpVersion <<"\n\n\n "<<request;
    std::string url = request.substr(firstSpace+1, findHttpVersion-(firstSpace+1));
-   //// std::cout <<" URL "<< url;
    return url;
 }
 
@@ -141,8 +150,6 @@ ParserEndpoint parseRequest(Request &request, ParserEndpoint notFoundHandler)
 // Function to handle an individual client connection
 void handleClient(ClientInfo *client)
 {
-
-
     char buffer[8194] = {0x00};
     int bytesRead = recv(client->sockfd, buffer, sizeof(buffer), 0);
 
@@ -153,14 +160,13 @@ void handleClient(ClientInfo *client)
       std::string urlDynamicPath      = extractUrlWithQueryParams(request);
       std::string url                 = extractUrl(request);
       auto headers                    = parseHeaders(request);
-      std::unordered_map<std::string, std::string> params = parseUrlParams(urlDynamicPath);
-     
+      std::unordered_map<std::string, std::string> queryParams = parseUrlParams(urlDynamicPath);
      
       auto it = getEndpointFromMap(url,registered_endpoint);
 
       std::string response;
 
-      if(it.first == "not_valid"){
+      if(it.first == INVALID_HTTP_URI){
             std::stringstream body;
 
             body << "HTTP VERB: "<< httpVerb <<"\n"
@@ -170,9 +176,9 @@ void handleClient(ClientInfo *client)
             for(auto header : headers){
                 body << header.first <<": "<<header.second <<"\n";
             }
-            if(params.size()>0){
+            if(queryParams.size()>0){
                 body <<"Query Parameters: \n";
-                for(auto param : params ){
+                for(auto param : queryParams ){
                     body << param.first <<" : "<< param.second<<"\n";
                 }
             }
@@ -184,20 +190,12 @@ void handleClient(ClientInfo *client)
       }else{
 
          Request request;
-         request.body = "";
          request.headers = headers;
          request.url = url;
-         request.urlParams = params;
+         request.queryParams = queryParams;
          auto res = it.second(&request);
-               
-         response = "HTTP/1.1 200 OK\r\n";
-         response += ("Content-Length: ") + std::to_string((*res).body.size()) + "\r\n";
-         response += "Content-Type: text/plain\r\n";
-         response += "\r\n\r\n";
-         response += (*res).body.c_str();
-         
+         response = res->buildResponse();
       }
-
       int querysend = send(client->sockfd, response.c_str(), response.length(), 0);
     }
 
@@ -304,14 +302,14 @@ Response *DefaultEndpoint(Request *request){
    Response *ret = new Response();
    ret->body ="NO RESPONSE MSG";
    ret->headers["Content-type"] = "text/plain";
-   ret->statusCode = 400;
+   ret->statusCode = HttpResponseCode::NotFound;
    return ret;
 }
 Response *DefaultEndpointW200(Request *request){
    Response *ret = new Response();
    ret->body ="NO RESPONSE MSG";
    ret->headers["Content-type"] = "text/plain";
-   ret->statusCode = 200;
+   ret->statusCode = HttpResponseCode::OK;
    return ret;
 }
 
@@ -411,7 +409,7 @@ bool validatePatterByUrl(std::vector<std::string> uri, std::vector<std::string> 
             if(ptype!=vType)
                return false;
          }else{
-            std::cout << *uIter <<"  EST ES IGUAL NOTHING TO DO\n";
+             
          }
          pIter++;
          uIter++;
@@ -423,7 +421,7 @@ bool validatePatterByUrl(std::vector<std::string> uri, std::vector<std::string> 
 std::pair<std::string, ParserEndpoint> getEndpointFromMap(const std::string uri,const std::map<std::string, ParserEndpoint>& enpointList){
 
     std::pair<std::string, ParserEndpoint> res;
-    res.first ="not_valid";
+    res.first =INVALID_HTTP_URI;
    
     if(uri.size()==1&&uri=="/"){
         std::string i = uri.c_str();
@@ -466,4 +464,88 @@ std::string generateStrRequestPaylod(const std::string& path,const RequestVerb& 
 
     request += "\r\n";
     return request;
+}
+
+
+std::string HttpResponseCodeToResponseString(HttpResponseCode code){
+   
+
+    auto strBuilder =[](int n, std::string s){
+        return std::to_string(n) +" "+s+"\r\n";
+    };
+    
+    switch (code)
+    {
+            // Informational codes (1xx)
+        case HttpResponseCode::Continue:// = 100, 
+            return strBuilder((int)HttpResponseCode::Continue, "Continue");
+        case HttpResponseCode::SwitchingProtocols :// = 101,
+           return  strBuilder((int)HttpResponseCode::SwitchingProtocols, "Switching Protocols");
+        // Success codes (2xx)
+        case HttpResponseCode::OK :// = 200,
+            return strBuilder((int)HttpResponseCode::OK, "OK");
+        case HttpResponseCode::Created :// = 201,
+            return strBuilder((int)HttpResponseCode::Created, "Created");
+        case HttpResponseCode::Accepted :// = 202,
+             return strBuilder((int)HttpResponseCode::Accepted, "Accepted");
+
+        // Redirection codes (3xx)
+        case HttpResponseCode::MovedPermanently://  = 301,
+             return strBuilder((int)HttpResponseCode::MovedPermanently, "Moved Permanently");
+        case HttpResponseCode::Found :// = 302,
+            return strBuilder((int)HttpResponseCode::Found, "Found");
+        case HttpResponseCode::SeeOther :// = 303,
+             return strBuilder((int)HttpResponseCode::SeeOther, "See Other");
+
+        // Client error codes (4xx)
+        case HttpResponseCode::BadRequest://  = 400,
+             return strBuilder((int)HttpResponseCode::BadRequest, "Bad Request");
+        case HttpResponseCode::Unauthorized://  = 401,
+             return strBuilder((int)HttpResponseCode::Unauthorized, "Unauthorized");
+        case HttpResponseCode::Forbidden://  = 403,
+             return strBuilder((int)HttpResponseCode::Forbidden, "OK");
+        case HttpResponseCode::NotFound://  = 404,
+            return strBuilder((int)HttpResponseCode::NotFound, "Not Found");
+
+        // Server error codes (5xx)
+        case HttpResponseCode::InternalServerError://  = 500,
+            return strBuilder((int)HttpResponseCode::InternalServerError, "Internal Server Error");
+        case HttpResponseCode::NotImplemented://  = 501,
+            return strBuilder((int)HttpResponseCode::NotImplemented, "Not Implemented");
+    }
+            
+    return strBuilder((int)HttpResponseCode::OK, "OK");
+}
+
+
+std::string httpHeadersToResponseString( std::unordered_map<std::string, std::string> headers){
+    std::string response;
+    for(auto it : headers)
+      response += it.first +": "+it.second +"\r\n";
+    return response;
+}
+
+std::string buildHttpResponseResponse(
+    std::unordered_map<std::string, std::string> headers,
+    std::string body,
+    HttpResponseCode statusCode
+){
+   std::stringstream response;
+   response <<"HTTP/1.1 "<< HttpResponseCodeToResponseString(statusCode);
+   response << httpHeadersToResponseString(headers);
+   int bodySize = body.size();
+   if(bodySize>0){
+      if(headers.find("Content-Length") == headers.end())
+        response <<"Content-Length: " << bodySize<<"\r\n\r\n"<<body;
+     else
+        response <<"\r\n"<< body;
+   }
+   return response.str();
+}
+
+std::string Response::buildResponse(){
+    return buildHttpResponseResponse(
+    headers,
+    body,
+    statusCode);
 }

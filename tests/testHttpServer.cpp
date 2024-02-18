@@ -50,7 +50,6 @@ TEST(ParseCorrectRoutes, SplitSize2){
 TEST(ValidateRoutePattern, ValidateRoute){
   const std::string route_to_parse = "/post/<post_id:int>";
   const std::string uri_to_parse = "/post/1";
-  std::cout <<"\n\n\n";  
   auto vecPattern = splitWords(route_to_parse, '/');
   auto vecUriToTest = splitWords(uri_to_parse, '/');
   EXPECT_EQ(vecPattern.size(), vecUriToTest.size());
@@ -75,7 +74,7 @@ TEST(ValidateRoutePattern, ValidateValidRoute){
 
    auto response = it.second(nullptr);
 
-   EXPECT_EQ(response->statusCode, 200);
+   EXPECT_EQ(response->statusCode, HttpResponseCode::OK);
 }
 
 
@@ -176,7 +175,7 @@ TEST(ValidateRoutePattern, ValidateRoutePatternWithDynamicGetRequest){
 
   auto response = it.second(nullptr);
 
-  EXPECT_EQ(response->statusCode, 200);
+  EXPECT_EQ(response->statusCode, HttpResponseCode::OK);
 
 }
 
@@ -221,6 +220,48 @@ TEST(ValidateRoutePattern, ValidateRoutePatternWithDynamicGetRequestWithRootPath
 
   auto response = it.second(nullptr);
 
-  EXPECT_EQ(response->statusCode, 200);
+  EXPECT_EQ(response->statusCode, HttpResponseCode::OK);
 
+}
+
+
+
+Response *home(Request *request){
+    auto response = new Response();
+    response->body = "hola";
+    response->headers["Content-Type"] = "text/plain";
+    response->headers["Content-Length"] = "4";
+    response->statusCode = request->url.find("favicon")==std::string::npos ? HttpResponseCode::OK : HttpResponseCode::NotFound; 
+    return response;
+}
+
+TEST(httpserverresponse, valid){
+  
+  const std::string expectedBaseUrl="/";
+  const std::string path = "/url/1/home?id=1;key=2;gusano=fad1c989-dfcd-4b06-bac2-82c98e8530b8";
+  const std::map<std::string, ParserEndpoint> routeList={
+    {"/post/<post_id:int>/hola", DefaultEndpoint},
+    {"/", home},
+  };
+
+
+
+
+  std::string request = generateStrRequestPaylod(path, RequestVerb::Get);
+
+  std::string httpVerb            = extractHttpVerb(request);
+  std::string urlDynamicPath      = extractUrlWithQueryParams(request);
+  std::string url                 = extractUrl(request);
+  auto headers                    = parseHeaders(request);
+  std::unordered_map<std::string, std::string> params = parseUrlParams(urlDynamicPath);
+  auto it = getEndpointFromMap("/",routeList);
+  Request request1;
+  ///Response *(*ParserEndpoint)(Request *request);
+  auto responseHandler = it.second;
+  auto responseGen = responseHandler(&request1);
+  std::string response = responseGen->buildResponse();
+  /////std::cout << response;
+  EXPECT_NE(it.first, INVALID_HTTP_URI);
+  EXPECT_EQ(it.first, "/");
+  EXPECT_NE(response.find("hola"), std::string::npos);
 }

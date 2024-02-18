@@ -1,6 +1,10 @@
 #pragma once
 #include "HttpServer.h"
 
+#define INVALID_HTTP_URI "InvalidHttpUriFromAhttpServer"
+
+
+Response *getFavIcon(Request *request);
 ParserEndpoint parseRequest(Request &request, ParserEndpoint notFoundHandler);
 std::unordered_map<std::string, std::string> parseRequest(const std::string &request);
 std::unordered_map<std::string, std::string> parseHeaders(const std::string &request);
@@ -27,7 +31,11 @@ std::string generateStrRequestPaylod(const std::string& path, const RequestVerb&
 std::string extractHttpVerb(const std::string request);
 std::string extractUrlWithQueryParams(std::string request);
 std::string extractUrl(std::string request);
-
+std::string buildHttpResponseResponse(
+    std::unordered_map<std::string, std::string> headers,
+    std::string body,
+    HttpResponseCode statusCode
+);
 
 
 
