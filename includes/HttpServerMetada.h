@@ -75,6 +75,7 @@ struct ClientInfo
 {
     SOCKET sockfd;
     sockaddr_in clientAddr;
+    ~ClientInfo();
 };
 
 struct Request

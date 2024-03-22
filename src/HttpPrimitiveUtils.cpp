@@ -141,6 +141,11 @@ std::unordered_map<std::string, std::string> parseHeaders(const std::string &req
     return headers;
 }
 
+ClientInfo::~ClientInfo(){
+    int fd = sockfd;
+    close(sockfd);
+    std::cout << "Client"<<fd<<" Destroyed\n";
+}
 
 ParserEndpoint parseRequest(Request &request, ParserEndpoint notFoundHandler)
 {
@@ -148,7 +153,7 @@ ParserEndpoint parseRequest(Request &request, ParserEndpoint notFoundHandler)
 }
 
 // Function to handle an individual client connection
-void handleClient(ClientInfo *client)
+void handleClientInfoFromThread(std::shared_ptr<ClientInfo> client)
 {
     char buffer[8194] = {0x00};
     int bytesRead = recv(client->sockfd, buffer, sizeof(buffer), 0);
@@ -157,11 +162,12 @@ void handleClient(ClientInfo *client)
         std::string request(buffer, bytesRead);
     
       std::string httpVerb            = extractHttpVerb(request);
+      auto requestVerb                = parseRequestVerb(request);
       std::string urlDynamicPath      = extractUrlWithQueryParams(request);
       std::string url                 = extractUrl(request);
       auto headers                    = parseHeaders(request);
       std::unordered_map<std::string, std::string> queryParams = parseUrlParams(urlDynamicPath);
-     
+      std::string body                = extractBody(request);
       auto it = getEndpointFromMap(url,registered_endpoint);
 
       std::string response;
@@ -188,11 +194,12 @@ void handleClient(ClientInfo *client)
                 response += "\r\n\r\n";
                 response += body.str();
       }else{
-
          Request request;
+         request.requestVerb = requestVerb;
          request.headers = headers;
          request.url = url;
          request.queryParams = queryParams;
+         request.body = body;
          auto res = it.second(&request);
          response = res->buildResponse();
       }

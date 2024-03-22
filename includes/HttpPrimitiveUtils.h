@@ -2,13 +2,13 @@
 #include "HttpServer.h"
 
 #define INVALID_HTTP_URI "InvalidHttpUriFromAhttpServer"
-
+void handleClientInfoFromThread(std::shared_ptr<ClientInfo> client);
 
 Response *getFavIcon(Request *request);
 ParserEndpoint parseRequest(Request &request, ParserEndpoint notFoundHandler);
 std::unordered_map<std::string, std::string> parseRequest(const std::string &request);
 std::unordered_map<std::string, std::string> parseHeaders(const std::string &request);
-void handleClient(ClientInfo *client);
+std::string RequestVerbToString(RequestVerb httpVerb);
 std::string fetchJsBuilder(
     std::string url, 
     std::string body, 

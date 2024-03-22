@@ -72,6 +72,7 @@ HttpServer::HttpServer(int port)
     std::cout << "Server v0.1 started\nListening on port : 0.0.0.0:" << port <<" "<< std::endl;
 }
 
+#include <memory>
 int HttpServer::start()
 {
     while (true) {
@@ -87,12 +88,12 @@ int HttpServer::start()
         }
 
         // Create a new client info structure
-        ClientInfo *client = new ClientInfo;
+        std::shared_ptr<ClientInfo> client(new ClientInfo);
         client->sockfd = clientSocket;
         client->clientAddr = clientAddr;
 
         // Handle the client connection in a separate thread
-        std::thread clientThread(handleClient, client);
+        std::thread clientThread(handleClientInfoFromThread, std::move(client));
         clientThread.detach();
     }
 
