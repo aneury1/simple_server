@@ -70,6 +70,7 @@
         "mutex": "cpp",
         "span": "cpp",
         "cinttypes": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "hash_map": "cpp"
     }
 }
