@@ -20,11 +20,9 @@ target_include_directories(${PROJECT_NAME} BEFORE ${IncludesDirs})
 # target_link_libraries(${PROJECT_NAME} PRIVATE ${LibrariesList})
 
 install(TARGETS AHttpServer DESTINATION lib)
-
 include(CTest)
 add_subdirectory(external)
 add_subdirectory(tests)
-
 
 # include(FetchContent)
 # FetchContent_Declare(
