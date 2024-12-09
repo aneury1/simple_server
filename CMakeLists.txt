@@ -23,6 +23,7 @@ install(TARGETS AHttpServer DESTINATION lib)
 include(CTest)
 add_subdirectory(external)
 add_subdirectory(tests)
+#add_subdirectory(sample)
 
 # include(FetchContent)
 # FetchContent_Declare(

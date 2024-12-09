@@ -1,21 +1,25 @@
 cmake_minimum_required(VERSION 3.18)
 project(APIService)
 
-# Include the parent directory to access the library
-# add_subdirectory(../build)
-
+# Set parent directory path
 set(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/.. ${CMAKE_CURRENT_BINARY_DIR}/build)
+# Add the library directory (assuming the library is defined in the parent)
+add_subdirectory(${PARENT_DIR} ${CMAKE_CURRENT_BINARY_DIR}/build)
 
-target_include_directories(${PROJECT_NAME} BEFORE ${PARENT_DIR})
+# Include the library headers
+include_directories(${PARENT_DIR}/includes)
 
-# Create the executable
+# Create the sample_project executable
 add_executable(sample_project main.cpp)
 
-# Link the static library to the executable
+# Include the parent directory headers (to find AHttpServer headers)
+target_include_directories(sample_project PRIVATE ${PARENT_DIR}/includes)
+
+# Link the library to sample_project
 target_link_libraries(sample_project PRIVATE AHttpServer)
 
-
-add_executable(APIService main.cpp)
-
+# Optionally, create APIService executable (if needed)
+# Uncomment the following lines if you need a separate executable
+# add_executable(APIService main.cpp)
+# target_link_libraries(APIService PRIVATE AHttpServer)
