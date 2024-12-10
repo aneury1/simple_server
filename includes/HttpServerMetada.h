@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
-
+#include <functional>
 #include <iostream>
 #include <map>
 #include <regex>
@@ -108,7 +108,8 @@ private:
     std::string raw_response;
 };
 
-typedef Response *(*ParserEndpoint)(Request *request);
+///typedef Response *(*ParserEndpoint)(Request *request);
+typedef std::function<Response*(Request *)> ParserEndpoint;
 
 extern std::map<std::string, ParserEndpoint> registered_endpoint;
 extern std::map<std::string, ParserEndpoint> registered_post_endpoint;

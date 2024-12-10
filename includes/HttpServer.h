@@ -29,31 +29,17 @@
 #include "HttpServerMetada.h"
 #include "IOUtils.h"
 
-
-
 struct HttpServer
 {
     SOCKET serverSocket;
-
     static std::string RootPath;
-
 public:
-
     void setRootPath(const std::string& path);
-
     const std::string getRootPath() const;
-  
     HttpServer endpoint(const std::string& endpoint,const ParserEndpoint& endp);
-
-    /// @brief 
-    /// @param path 
-    /// @return 
     HttpServer Post(const std::string& path );
     HttpServer Get(const std::string& path );
-
     bool validateEnpointRoute(const std::string& path);
-
     HttpServer(const int port);
-
     int start();
 };

@@ -425,7 +425,7 @@ bool validatePatterByUrl(std::vector<std::string> uri, std::vector<std::string> 
   };
 
 
-std::pair<std::string, ParserEndpoint> getEndpointFromMap(const std::string uri,const std::map<std::string, ParserEndpoint>& enpointList){
+std::pair<std::string, ParserEndpoint> getEndpointFromMap(const std::string uri, const std::map<std::string, ParserEndpoint>& enpointList){
 
     std::pair<std::string, ParserEndpoint> res;
     res.first =INVALID_HTTP_URI;
