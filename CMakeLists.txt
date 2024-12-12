@@ -1,6 +1,20 @@
 cmake_minimum_required(VERSION 3.10)
 
 set(PROJECT_NAME AHttpServer)
+
+set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=*")
+# set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=modernize-*,performance-*"
+
+# Enable Code Coverage
+option(ENABLE_COVERAGE "Enable code coverage" ON)
+
+if (ENABLE_COVERAGE)
+    message(STATUS "Code Coverage enabled")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage -O0 -g")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
+endif()
+
+
 project(${PROJECT_NAME} LANGUAGES CXX)
 
 file(GLOB_RECURSE SRCS src/*.cpp)

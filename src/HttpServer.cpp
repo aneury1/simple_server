@@ -1,7 +1,7 @@
 #include "HttpServer.h"
 #include "HttpPrimitiveUtils.h"
 #include "HttpServerMetada.h"
-
+#include <memory>
 
 
 
@@ -72,7 +72,7 @@ HttpServer::HttpServer(int port)
     std::cout << "Server v0.1 started\nListening on port : 0.0.0.0:" << port <<" "<< std::endl;
 }
 
-#include <memory>
+
 int HttpServer::start()
 {
     while (true) {

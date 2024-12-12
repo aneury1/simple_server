@@ -7,6 +7,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Install build tools, compilers, and CMake
 RUN apt-get update && apt-get install -y \
     build-essential \
+    sudo apt-get install clang-tidy \
+    sudo apt-get install cppcheck \
+    sudo apt-get install gcc g++ lcov gcovr \
     cmake \
     git \
     && rm -rf /var/lib/apt/lists/*
