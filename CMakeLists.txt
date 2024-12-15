@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-set(PROJECT_NAME AHttpServer)
+set(PROJECT_NAME simple_http_server)
 
 set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=*")
 # set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=modernize-*,performance-*"
@@ -23,7 +23,7 @@ include_directories(includes PUBLIC)
 
 message(STATUS "Building ${PROJECT_NAME}...")
 
-add_library(AHttpServer ${SRCS})
+add_library(simple_http_server ${SRCS})
 
 list(APPEND IncludesDirs 
      PRIVATE includes)
@@ -33,7 +33,7 @@ target_include_directories(${PROJECT_NAME} BEFORE ${IncludesDirs})
 # list(APPEND LibrariesList TestLibrary)
 # target_link_libraries(${PROJECT_NAME} PRIVATE ${LibrariesList})
 
-install(TARGETS AHttpServer DESTINATION lib)
+install(TARGETS simple_http_server DESTINATION lib)
 include(CTest)
 add_subdirectory(external)
 add_subdirectory(tests)
