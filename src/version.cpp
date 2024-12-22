@@ -1,6 +1,6 @@
 #include <string>
 
 
-std::string getVersion(){
+auto getVersion() -> std::string{
   return "AhttpVersion-v01";
 }
