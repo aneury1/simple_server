@@ -7,6 +7,9 @@
 #include <cstring>        // memset
 #include <unistd.h>       // close
 #include <iostream>
+#include <stdio.h>
+#include <memory>
+#include <array>
 
 std::string ReplaceAll(std::string str, const std::string &from, const std::string &to)
 {
@@ -106,4 +109,41 @@ std::map<std::string, std::string> getAddress(){
     }
 
     return ret;
+}
+std::string catCMD(std::string path, std::string desc){
+    const char* command = std::string("cat "+ path).c_str();  
+    std::array<char, 1024> buffer;
+    std::string result;
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(command, "r"), pclose);
+    if (!pipe) {
+        return "Failed to run the sequence LS";
+    }
+    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+        result += buffer.data();
+    }
+    
+    if(result.size()<=0)
+      result += "Information seems to be not available...\r\n";
+
+
+    return desc + result;  
+}
+
+std::string getPortLS(){
+    const char* command = "ss -tulnp";  
+    std::array<char, 512> buffer;
+    std::string result;
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(command, "r"), pclose);
+    if (!pipe) {
+        return "Failed to run the sequence LS";
+    }
+    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+        result += buffer.data();
+    }
+    return "Open Ports and Associated Processes:\n" + result;   
+}
+
+std::string catCMD(std::string cmd){
+    std::stringstream stream;
+
 }

@@ -27,6 +27,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(nlohmannjson)
 
+
 # Link jsonparser to your library
 
 file(GLOB_RECURSE SRCS src/*.cpp)
@@ -46,6 +47,11 @@ target_include_directories(${PROJECT_NAME} BEFORE ${IncludesDirs})
 
 # list(APPEND LibrariesList TestLibrary)
 # target_link_libraries(${PROJECT_NAME} PRIVATE ${LibrariesList})
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/includes>
+    $<INSTALL_INTERFACE:includes>
+)
 
 if(ENABLE_INSTALL)
  install(TARGETS simple_http_server DESTINATION lib)

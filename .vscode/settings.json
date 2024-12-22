@@ -71,6 +71,15 @@
         "span": "cpp",
         "cinttypes": "cpp",
         "variant": "cpp",
-        "hash_map": "cpp"
+        "hash_map": "cpp",
+        "csignal": "cpp",
+        "cfenv": "cpp",
+        "codecvt": "cpp",
+        "complex": "cpp",
+        "ranges": "cpp",
+        "shared_mutex": "cpp",
+        "stdfloat": "cpp",
+        "typeindex": "cpp",
+        "valarray": "cpp"
     }
 }
