@@ -55,6 +55,20 @@ enum class HttpResponseCode {
   // You can add other relevant codes here
 };
 
+enum class HttpContentType {
+    TEXT_HTML,
+    TEXT_PLAIN,
+    APPLICATION_JSON,
+    APPLICATION_XML,
+    MULTIPART_FORM_DATA,
+    APPLICATION_OCTET_STREAM,
+    IMAGE_PNG,
+    IMAGE_JPEG,
+    UNKNOWN
+};
+std::string ContentTypetoString(HttpContentType type);
+
+
 enum class UrlDatatype{
     Integer,
     Str,

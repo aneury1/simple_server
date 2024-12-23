@@ -556,3 +556,24 @@ std::string Response::buildResponse(){
     body,
     statusCode);
 }
+
+
+std::string ContentTypetoString(HttpContentType type) {
+    static const std::unordered_map<HttpContentType, std::string> contentTypeMap = {
+        {HttpContentType::TEXT_HTML, "text/html"},
+        {HttpContentType::TEXT_PLAIN, "text/plain"},
+        {HttpContentType::APPLICATION_JSON, "application/json"},
+        {HttpContentType::APPLICATION_XML, "application/xml"},
+        {HttpContentType::MULTIPART_FORM_DATA, "multipart/form-data"},
+        {HttpContentType::APPLICATION_OCTET_STREAM, "application/octet-stream"},
+        {HttpContentType::IMAGE_PNG, "image/png"},
+        {HttpContentType::IMAGE_JPEG, "image/jpeg"},
+        {HttpContentType::UNKNOWN, "unknown"}
+    };
+
+    auto it = contentTypeMap.find(type);
+    if (it != contentTypeMap.end()) {
+        return it->second;
+    }
+    return "unknown";
+}
