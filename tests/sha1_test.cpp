@@ -2,9 +2,9 @@
 SHA1 tests by Philip Woolford <woolford.philip@gmail.com>
 100% Public Domain
  */
-#if 0 
-#include "sha1.h"
+#if 0
 #include "CUnit/Basic.h"
+#include "sha1.h"
 #include "stdio.h"
 #include "string.h"
 
@@ -215,6 +215,5 @@ int main(
   CU_cleanup_registry();
   return CU_get_error();
 }
-
 
 #endif

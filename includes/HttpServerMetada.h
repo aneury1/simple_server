@@ -66,14 +66,18 @@ enum class HttpContentType {
     IMAGE_JPEG,
     UNKNOWN
 };
-std::string ContentTypetoString(HttpContentType type);
 
+std::string ContentTypetoString(HttpContentType type);
 
 enum class UrlDatatype{
     Integer,
     Str,
     Boolean,
-    InvalidUrlDatatype
+    InvalidUrlDatatype 
+
+
+
+  
 };
 
 ///#include "HttpServer.h"

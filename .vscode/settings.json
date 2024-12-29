@@ -80,6 +80,12 @@
         "shared_mutex": "cpp",
         "stdfloat": "cpp",
         "typeindex": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "csetjmp": "cpp",
+        "*.ipp": "cpp",
+        "strstream": "cpp",
+        "coroutine": "cpp",
+        "slist": "cpp",
+        "future": "cpp"
     }
 }

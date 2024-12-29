@@ -11,7 +11,7 @@ Response *home(Request *request){
     response->body = text;
     response->headers["Content-Type"] = "text/html";
     response->headers["Content-Length"] = std::to_string(response->body.size());
-    response->statusCode = 200; 
+    response->statusCode = 200;
     return response;
 }
 -
@@ -23,14 +23,16 @@ Response *home(Request *request){
 -    auto response = new Response();
 -    response->body = "Simple Text";
 -    response->headers["Content-Type"] = "text/html";
--    response->headers["Content-Length"] = std::to_string(response->body.size());
--    response->statusCode = 200; 
+-    response->headers["Content-Length"] =
+std::to_string(response->body.size());
+-    response->statusCode = 200;
 -    return response;
 -}
 -
 -Response *flutterJS(Request *request)
 -{
--    auto buffer = readWholeFile("/home/aneury1/project/testbed/build/web/flutter.js");
+-    auto buffer =
+readWholeFile("/home/aneury1/project/testbed/build/web/flutter.js");
 -    auto response = new Response();
 -    response->body = buffer;
 -    response->headers["Content-Type"] = "text/javascript; charset=utf-8";
@@ -97,14 +99,14 @@ Response *home(Request *request){
 -{
 -    std::string file = request->url.substr(1, request->url.size() - 1);
 -    auto buffer = std::string("PRUEBA");
--    
+-
 -    for(auto re : request->parameters){
 -        buffer+="\n";
 -        buffer+="Key: "+ re.first;
 -        buffer+= "Value: "+ re.second;
 -        buffer+="\n";
 -    }
--    
+-
 -    auto response = new Response();
 -    response->body = buffer;
 -    response->headers["Content-Type"] = "text/javascript; charset=utf-8";
