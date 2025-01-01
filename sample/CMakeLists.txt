@@ -17,7 +17,7 @@ add_executable(sample_project main.cpp)
 target_include_directories(sample_project PRIVATE ${PARENT_DIR}/includes)
 
 # Link the library to sample_project
-target_link_libraries(sample_project PRIVATE simple_http_server)
+target_link_libraries(sample_project PRIVATE simple_server)
 
 # Optionally, create APIService executable (if needed)
 # Uncomment the following lines if you need a separate executable

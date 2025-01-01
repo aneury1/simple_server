@@ -1,20 +1,55 @@
-# BUILD_TESTING variable is created by include(CTest)
-# It is set to ON by default
 
-set(PROJECT_ROOT_PATH ${PROJECT_SOURCE_DIR})
+cmake_minimum_required(VERSION 2.13)
+project(simple_server_test)
 
-message(STATUS "Project root Path ${PROJECT_ROOT_PATH}")
+include_directories(${CMAKE_SOURCE_DIR}/includes)
+include_directories(${CMAKE_SOURCE_DIR}/tests/)
 
-include_directories(${PROJECT_ROOT_PATH}/includes/)
+message("include dirs: ${CMAKE_SOURCE_DIR}")
 
-if (BUILD_TESTING)
-    add_executable(my_test my_test.cpp)
-    add_executable(test_http_server testHttpServer.cpp)
-    target_link_libraries(my_test PRIVATE GTest::gtest_main  AHttpServer)
-    target_link_libraries(test_http_server PRIVATE GTest::gtest_main  AHttpServer)
+include(FetchContent)
 
-    include(GoogleTest)
-    # Finds all the Google tests associated with the executable
-    gtest_discover_tests(my_test)
-    gtest_discover_tests(test_http_server)
+FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG v1.14.0
+)
+
+FetchContent_MakeAvailable(googletest)
+
+add_library(GTest::GTest INTERFACE IMPORTED)
+
+target_link_libraries(GTest::GTest INTERFACE gtest_main gmock_main)
+
+add_executable(${PROJECT_NAME}
+    main_test.cpp
+    ../src/simple_server_http_connection.cpp
+    ../src/simple_server_http.cpp
+    ../src/simple_server_utils.cpp
+)
+
+add_compile_definitions(SIMPLE_SERVER_TESTING)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    GTest::GTest
+)
+
+add_test(NAME testapp_gtest
+    COMMAND ${PROJECT_NAME})
+
+include(GoogleTest)
+gtest_discover_tests(${PROJECT_NAME})
+
+if(SIMPLE_SERVER_COVERAGE)
+    message("Compiling with coverage flags")
+    # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fprofile-arcs -ftest-coverage")
+    # set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
+    # set(CMAKE_EXE_LINKER_FLAGS "-fprofile-arcs -ftest-coverage")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0")
+    set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -O0")
+    append_coverage_compiler_flags()
+    setup_target_for_coverage_gcovr_html(NAME ${PROJECT_NAME}_cov
+        BASE_DIRECTORY ../
+        EXCLUDE "test/" "build/"
+    )
 endif()

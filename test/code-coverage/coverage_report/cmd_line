@@ -1,1 +1,0 @@
-genhtml ./test/code-coverage/coverage_filtered.info --output-directory ./test/code-coverage/coverage_report
