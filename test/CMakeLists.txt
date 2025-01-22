@@ -22,12 +22,10 @@ add_library(GTest::GTest INTERFACE IMPORTED)
 target_link_libraries(GTest::GTest INTERFACE gtest_main gmock_main)
 
 add_executable(${PROJECT_NAME}
-    main_test.cpp
-    ../src/base/simple_server_sha1.cpp
-    ../src/http/simple_server_http_connection.cpp
-    ../src/http/simple_server_http.cpp
-    ../src/base/simple_server_utils.cpp
-    ../src/websocket/simple_server_websocket_connection.cpp
+    variant_test.cpp
+    string_utils_test.cpp
+    io_utils_test.cpp
+    ../src/tcp_default_handler.cpp
 )
 
 add_compile_definitions(SIMPLE_SERVER_TESTING)
@@ -40,6 +38,7 @@ add_test(NAME testapp_gtest
     COMMAND ${PROJECT_NAME})
 
 include(GoogleTest)
+
 gtest_discover_tests(${PROJECT_NAME})
 
 if(SIMPLE_SERVER_COVERAGE)
@@ -49,9 +48,9 @@ if(SIMPLE_SERVER_COVERAGE)
     # set(CMAKE_EXE_LINKER_FLAGS "-fprofile-arcs -ftest-coverage")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0")
     set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -O0")
-    append_coverage_compiler_flags()
-    setup_target_for_coverage_gcovr_html(NAME ${PROJECT_NAME}_cov
-        BASE_DIRECTORY ../
-        EXCLUDE "test/" "build/"
-    )
+    # append_coverage_compiler_flags()
+    # setup_target_for_coverage_gcovr_html(NAME ${PROJECT_NAME}_cov
+    #    BASE_DIRECTORY ../
+    #    EXCLUDE "test/" "build/"
+    #)
 endif()

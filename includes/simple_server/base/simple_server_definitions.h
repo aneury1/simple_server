@@ -1,8 +1,5 @@
 #ifndef SIMPLE_SERVER_DEFINITIONS_DEFINED
 #define SIMPLE_SERVER_DEFINITIONS_DEFINED
-#pragma once
-
-
 
 #ifdef WIN32
 #include <winsock2.h>
@@ -26,8 +23,8 @@
 #include <unordered_map>
 using std::string;
 
-#include "simple_server_http_constant.h"
-#include "simple_server_http_connection.h"
+#include "simple_server/http/simple_server_http_constant.h"
+#include "simple_server/http/simple_server_http_connection.h"
 
 namespace simple_server {
 
@@ -61,6 +58,9 @@ enum class supported_protocols_by_default {
   RawTcp,
 };
 
+
+
+
 struct socket_connection {
   socket_type connection;
   sockaddr_in address;
@@ -69,6 +69,8 @@ struct socket_connection {
   short port;
   bool valid;
 };
+ 
+
 
 }  // namespace simple_server
 

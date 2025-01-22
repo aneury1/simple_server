@@ -79,6 +79,54 @@ const std::unordered_map<content_type, std::string> content_type_map = {
     {content_type::unknown, "unknown"}
 };
 
+enum class http_header {
+    // HTTP Headers
+    Host,
+    Content_Type,
+    Content_Length,
+    User_Agent,
+    Accept,
+    Authorization,
+    Cache_Control,
+    Connection,
+    
+    // WebSocket Headers
+    Upgrade,
+    Sec_WebSocket_Key,
+    Sec_WebSocket_Accept,
+    Sec_WebSocket_Version,
+    Sec_WebSocket_Protocol,
+    Sec_WebSocket_Extensions,
+    
+    // Default Unknown
+    Unknown
+};
+
+// Map to convert enum values to lowercase strings
+const std::map<http_header, std::string> HeaderToString = {
+    // HTTP Headers
+    {http_header::Host, "host"},
+    {http_header::Content_Type, "content-type"},
+    {http_header::Content_Length, "content-length"},
+    {http_header::User_Agent, "user-agent"},
+    {http_header::Accept, "accept"},
+    {http_header::Authorization, "authorization"},
+    {http_header::Cache_Control, "cache-control"},
+    {http_header::Connection, "connection"},
+
+    // WebSocket Headers
+    {http_header::Upgrade, "upgrade"},
+    {http_header::Sec_WebSocket_Key, "sec-websocket-key"},
+    {http_header::Sec_WebSocket_Accept, "sec-websocket-accept"},
+    {http_header::Sec_WebSocket_Version, "sec-websocket-version"},
+    {http_header::Sec_WebSocket_Protocol, "sec-websocket-protocol"},
+    {http_header::Sec_WebSocket_Extensions, "sec-websocket-extensions"},
+
+    // Default
+    {http_header::Unknown, "unknown"}
+};
+
+
 }  // namespace simple_server
 
 

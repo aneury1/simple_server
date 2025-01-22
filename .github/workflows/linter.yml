@@ -1,0 +1,17 @@
+name: C++ Linter
+
+on: [push, pull_request]
+
+jobs:
+  clang-tidy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Clang
+      run: sudo apt-get install clang-tidy
+
+    - name: Run Clang-Tidy
+      run: |
+        clang-tidy **/*.cpp -- -std=c++17

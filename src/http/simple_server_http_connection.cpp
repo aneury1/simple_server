@@ -1,7 +1,7 @@
-#include "simple_server_http_connection.h"
-#include "simple_server_definitions.h"
-#include "simple_server_http_constant.h"
-#include "simple_server_utils.h"
+#include "simple_server/base/simple_server_definitions.h"
+#include "simple_server/base/simple_server_utils.h"
+#include "simple_server/http/simple_server_http_connection.h"
+#include "simple_server/http/simple_server_http_constant.h"
 
 namespace simple_server {
 
@@ -143,6 +143,17 @@ content_type http_content_type_from_string(const std::string& type) {
     return content_type::unknown;
 }
 
+std::string http_header_to_string(http_header header) {
+    auto it = HeaderToString.find(header);
+    return (it != HeaderToString.end()) ? it->second : "unknown";
+}
+http_header string_to_http_header(const std::string& headerStr) 
+{
+    for(auto it : HeaderToString)
+      if(it.second == headerStr)
+         return it.first;
+    return http_header::Unknown;
+}
 
 
 }  // namespace simple_server

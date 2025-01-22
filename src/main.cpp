@@ -1,10 +1,17 @@
-#include "simple_server.h"
-#include "jzmn.h"
+#include "simple_server/simple_server.h"
+///#include "jzmn.h"
 #include <memory>
 int main(int argc,char *argv[])
 {
   std::shared_ptr<simple_server::http_server> httpserver(new simple_server::http_server(9000,"HOLA"));
   httpserver->create_socket();
+
+  httpserver->add_route_handler("/",[](simple_server::Request *request)->simple_server::Response *{
+      simple_server::Response* response = new simple_server::Response();
+      response->status_code = simple_server::http_response_code::SwitchingProtocols;
+      return response;
+  });
+
 
   httpserver->add_route_handler("/",[](simple_server::Request *)->simple_server::Response *{
       simple_server::Response* response = new simple_server::Response();
@@ -36,7 +43,7 @@ int main(int argc,char *argv[])
       response->status_code = simple_server::http_response_code::OK;
       return response;
   })
-   ->add_route_handler("^\/.*\.xpp$",[](simple_server::Request *req)->simple_server::Response *{
+   ->add_route_handler( "^\/.*\.xpp$",[](simple_server::Request *req)->simple_server::Response *{
       simple_server::Response* response = new simple_server::Response();
       response->body="HOLA XPP" + req->url;
       response->headers["Content-type"]="text/plain";

@@ -5,16 +5,19 @@
 #include <vector>
 #include <functional>
 #include <algorithm>
-#include "simple_server_definitions.h"
-#include "simple_server_interface.h"
-#include "simple_server_logger.h"
+#include "simple_server/base/simple_server_definitions.h"
+#include "simple_server/base/simple_server_interface.h"
+#include "simple_server/base/simple_server_logger.h"
 
 namespace simple_server {
-
+typedef std::unordered_map<std::string,std::string> StringMap;
 std::string replace_all(std::string str, const std::string &from,
                        const std::string &to);
 
 std::string read_whole_file(std::string src);
+
+int send_buffer(const socket_connection& connection, std::string buffer);
+int send_buffer(const socket_connection& connection, std::vector<uint8_t> buffer);
 
 void print_error_of_descriptor(const socket_connection& fd);
 std::vector<String> split_words(String word, char sp);

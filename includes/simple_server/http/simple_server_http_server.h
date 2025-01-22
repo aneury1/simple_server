@@ -2,13 +2,17 @@
 #define SIMPLE_SERVER_HTTP_SERVER_DEFINED
 #pragma once
 #include <unordered_map>
-
-#include "simple_server_http_connection.h"
-#include "simple_server_interface.h"
+#include "simple_server/tcp_handler/simple_server_tcp_handlers.h"
+#include "simple_server/http/simple_server_http_connection.h"
+#include "simple_server/base/simple_server_interface.h"
 
 namespace simple_server{
 
-class http_server : public server_interface {
+class http_server : public server_interface{
+  
+  private:
+   
+   std::shared_ptr<tcp_handler> tcp_handler_instace;
 
   public:
     virtual ~http_server() = default;
@@ -23,11 +27,11 @@ class http_server : public server_interface {
     ///       by creating an state machine in every request we can do some sub-process of every callback
     ///       configure by especific endpoint.
     std::unordered_map<std::string, endpointcb> routes_map;
+    std::unordered_map<std::string, endpointcb> routes_ws_map;
     std::pair<String, endpointcb> query_endpoint_from_map(const String uri, const std::unordered_map<std::string, endpointcb>& routes_map);
+    
+    void handle_websocket_handshake(std::pair<std::string, endpointcb> response,Request request, std::shared_ptr<socket_connection> con);
     void handle_connection_request(std::shared_ptr<socket_connection> con);
-
-  
- 
 
 };
 

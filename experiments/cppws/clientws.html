@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Echo Client</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #messages {
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            height: 200px;
+            overflow-y: scroll;
+        }
+        #input-container {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>WebSocket Echo Client</h1>
+    <div>
+        <label for="message">Message:</label>
+        <input type="text" id="message" placeholder="Type a message">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+    <div id="messages"></div>
+
+    <script>
+        // Connect to WebSocket Echo Server on localhost:9000
+        const socket = new WebSocket('ws://localhost:9000');
+
+        const messagesDiv = document.getElementById('messages');
+
+        // Connection opened
+        socket.addEventListener('open', (event) => {
+            logMessage('✅ Connected to WebSocket server on ws://localhost:9000');
+        });
+
+        // Listen for messages
+        socket.addEventListener('message', (event) => {
+            logMessage(`📥 Server: ${event.data}`);
+        });
+
+        // Handle errors
+        socket.addEventListener('error', (event) => {
+            logMessage('❌ Error: Unable to connect to ws://localhost:9000');
+            console.error(event);
+        });
+
+        // Connection closed
+        socket.addEventListener('close', (event) => {
+            logMessage('🔌 Disconnected from WebSocket server');
+        });
+
+        // Send a message
+        function sendMessage() {
+            const input = document.getElementById('message');
+            const message = input.value;
+            if (message) {
+                socket.send(message);
+                logMessage(`📤 You: ${message}`);
+                input.value = '';
+            }
+        }
+
+        // Log messages to the messagesDiv
+        function logMessage(message) {
+            const p = document.createElement('p');
+            p.textContent = message;
+            messagesDiv.appendChild(p);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+    </script>
+</body>
+</html>

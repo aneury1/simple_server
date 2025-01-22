@@ -5,7 +5,7 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
-#include "simple_server_definitions.h"
+#include "simple_server/base/simple_server_definitions.h"
 
 namespace simple_server {
 

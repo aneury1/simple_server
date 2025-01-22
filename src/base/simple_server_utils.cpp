@@ -1,4 +1,4 @@
-#include "simple_server_utils.h"
+#include "simple_server/base/simple_server_utils.h"
 #include <sstream>
 #include <fstream>
 #include <string>
@@ -29,6 +29,21 @@ std::string replace_all(std::string str, const std::string &from,
   }
   return str;
 }
+
+int _send_data_set(int fd, char *buffer, int len, int opt=0)
+{
+  return -999;
+}
+
+int send_buffer(const socket_connection& connection, std::string buffer){
+  return _send_data_set(connection.connection, (char *)buffer.c_str(), buffer.size(), 0);
+}
+int send_buffer(const socket_connection& connection, std::vector<uint8_t> buffer){
+   return _send_data_set(connection.connection, (char *)buffer.data(), buffer.size(), 0);
+}
+
+
+
 std::string read_whole_file(std::string src)
 {
     std::fstream stream(src, std::ios::in | std::ios::binary);

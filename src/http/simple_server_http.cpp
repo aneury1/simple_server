@@ -15,13 +15,16 @@
 #include <unistd.h>
 #endif
 
-#include "simple_server_definitions.h"
-#include "simple_server_http_connection.h"
-#include "simple_server_http_constant.h"
-#include "simple_server_interface.h"
-#include "simple_server_http_server.h"
-#include "simple_server_logger.h"
-#include "simple_server_utils.h"
+#include "simple_server/base/simple_server_logger.h"
+#include "simple_server/base/simple_server_utils.h"
+#include "simple_server/base/simple_server_definitions.h"
+#include "simple_server/base/simple_server_interface.h"
+#include "simple_server/http/simple_server_http_connection.h"
+#include "simple_server/http/simple_server_http_constant.h"
+#include "simple_server/http/simple_server_http_server.h"
+ 
+#include "simple_server/websocket/simple_server_websocket_connection.h"
+
 
 namespace simple_server {
 
@@ -85,6 +88,7 @@ server_interface* http_server::start() {
       std::cerr << "Failed to accept client connection" << std::endl;
       continue;
     } else {
+      std::cout <<"Connection Accepted;\n";
       std::thread clientThread(std::bind(&simple_server::http_server::handle_connection_request, this, connection));
       clientThread.detach();
     }
@@ -97,28 +101,56 @@ server_interface* http_server::start() {
   return this;
 }
 
-void http_server::handle_connection_request(
-    std::shared_ptr<socket_connection> con) {
+void http_server::handle_websocket_handshake(std::pair<std::string, endpointcb> response,Request request, std::shared_ptr<socket_connection> con)
+{
+  auto response_transformed = websocket_connection_manager::get().create_new_ws_connection(request.headers,con->connection);
+ //// std::cout <<response_transformed<<"\n\n";
+  int querysend =send(con->connection, response_transformed.c_str(), response_transformed.length(), 0);
+}
+
+void http_server::handle_connection_request(std::shared_ptr<socket_connection> con) {
 
   constexpr int default_max_buffer= 2048;
   char buffer[default_max_buffer] = {0x00};
 
-  int bytes_read = recv(con->connection, buffer, 1024, 0);
+  int bytes_read = recv(con->connection, buffer, default_max_buffer, 0);
+  std::cout <<"bytes reads"<<bytes_read<<"\n";
 
   if (bytes_read > 0) {
-    String request(buffer);
-    auto http_verb = extract_http_verb(request);
+    String str_request(buffer);
+    auto http_verb = extract_http_verb(str_request);
 
-    auto requestVerb = parseRequestVerb(request);
-    String urlDynamicPath = extract_url_with_query_params(request);
-    String url = extract_url(request);
-    auto headers = parse_headers(request);
+    auto requestVerb = parseRequestVerb(str_request);
+    String urlDynamicPath = extract_url_with_query_params(str_request);
+    String url = extract_url(str_request);
+    auto headers = parse_headers(str_request);
     StringMap queryParams = parse_url_params(urlDynamicPath);
-    String body = extract_body(request);
-    auto it = query_endpoint_from_map(url, routes_map);
-
-    String response;
+    String body = extract_body(str_request);
+    std::pair<std::string, endpointcb>it;
+    Request request;
+    request.requestVerb = requestVerb;
+    request.headers = headers;
+    request.url = url;
+    request.query_params = queryParams;
+    request.body = body;
+    bool is_websocket = false;
+    if(!websocket_connection_manager::get().is_websocket_request(headers))
+    {
+      it = query_endpoint_from_map(url, routes_map);
+    } 
+    else{
+      ///it = query_endpoint_from_map(url, routes_ws_map);
+      is_websocket =true;
+    }
     
+    
+      std::cout <<"is websocket "<< is_websocket;
+      if(is_websocket){
+        handle_websocket_handshake(it,request, con);
+        return ;
+      }
+    String response;
+
     if (it.first == INVALID_HTTP_URI) {
       StringStream body;
 
@@ -142,12 +174,7 @@ void http_server::handle_connection_request(
       response += "\r\n\r\n";
       response += body.str();
     } else {
-      Request request;
-      request.requestVerb = requestVerb;
-      request.headers = headers;
-      request.url = url;
-      request.query_params = queryParams;
-      request.body = body;
+
       auto res = it.second(&request);
       response = res->buildResponse();
     }
