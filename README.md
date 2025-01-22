@@ -1,7 +1,7 @@
-# AHTTPServer
+# simple Server
 
 ## about
-this project is a HTTP Server application that let people create endpoints, firstly designed to 
+this project is a  Server application that let people create endpoints, firstly designed to 
 help me understand how socket, http, parsers and other stuff works;
 
 ## refactoring
